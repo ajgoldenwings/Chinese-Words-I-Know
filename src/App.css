@@ -1,0 +1,40 @@
+.App {
+	text-align: center;
+}
+
+.App-header {
+  background-color: #222;
+  padding: 18px;
+	color: white;
+}
+
+.App-footer {
+	padding: 18px;
+	color: #757575;
+	text-align: center;
+	margin: 20px;
+	line-height: 24px;
+	font-size: smaller;
+}
+
+.App-footer a:visited, footer a:link, footer a {
+	text-decoration: none;
+	color: #757575;
+}
+
+.App-footer a:visited {
+	color: #757575;
+}
+
+.App-footer a:link {
+	color: #757575;
+}
+
+.App-header-photo {
+	width:30px;
+}
+
+.App-title {
+  font-size: 1.5em;
+	padding: 18px;
+}
