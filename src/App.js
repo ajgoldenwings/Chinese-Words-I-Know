@@ -25,6 +25,9 @@ const styles = theme => ({
 	formControl: {
 		margin: theme.spacing.unit,
 	},
+	formControlButton: {
+		margin: theme.spacing.unit,
+	},
 	alignRight: {
 		textAlign: 'right',
 	},
@@ -33,7 +36,7 @@ const styles = theme => ({
 	},
 	gridWrapper: {
 		textAlign: 'center',
-		maxWidth: 650,
+		maxWidth: 700,
 		marginLeft  : 'auto',
 		marginRight : 'auto'
 	}
@@ -112,8 +115,8 @@ class App extends Component {
 								<InputLabel htmlFor="wordNameInChineseEl">Chinese Word</InputLabel>
 								<Input type="text" id="wordNameInChineseEl" value={this.state.textStateChinese} onChange={this.handleChangeChinese} />
 							</FormControl>
-							<Button type="submit" variant="raised">
-								Add Leaned Word
+							<Button type="submit" variant="raised" className={classes.formControlButton}>
+								Add Learned Chinese Word
 							</Button>
 						</form>
 					</Grid>
