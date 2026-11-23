@@ -151,3 +151,16 @@ describe('put-progress', () => {
     expect(source).not.toMatch(/BatchWrite/i);
   });
 });
+
+describe('put-progress empty lastSeenAt', () => {
+  test('accepts a never-seen word with an empty lastSeenAt', async () => {
+    send.mockResolvedValueOnce({});
+    const res: any = await putHandler(event({ items: [{ ...record('cat'), lastSeenAt: '', manualOverride: 'known' }] }));
+    expect(res.statusCode).toBe(200);
+    expect(parse(res).accepted).toEqual(['cat']);
+  });
+  test('still rejects a lastSeenAt that is not a date', async () => {
+    const res: any = await putHandler(event({ items: [{ ...record('cat'), lastSeenAt: 'yesterday' }] }));
+    expect(res.statusCode).toBe(400);
+  });
+});

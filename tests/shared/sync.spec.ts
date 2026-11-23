@@ -2,11 +2,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { UserWordState } from '@shared/entities';
 import {
   MAX_BATCH_SIZE,
+  PULL_FAILED_MESSAGE,
+  PUSH_FAILED_MESSAGE,
+  SIGN_IN_EXPIRED_MESSAGE,
   SyncService,
   fromCloudRecord,
   mergeWordStates,
   toCloudRecord,
   type CloudWordState,
+  type SyncStatusInfo,
   type SyncStore,
 } from '@shared/sync';
 
@@ -223,5 +227,115 @@ describe('SyncService', () => {
     }
     expect(fetchFn).toHaveBeenCalled();
     service.dispose();
+  });
+});
+describe('SyncService status and refresh', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+  function make(initial: UserWordState[], fetchFn: ReturnType<typeof vi.fn>, token: string | null = 'tok') {
+    const fs = fakeStore(initial);
+    const statuses: SyncStatusInfo[] = [];
+    const service = new SyncService({
+      store: fs.store,
+      getToken: () => Promise.resolve(token),
+      fetch: fetchFn as unknown as typeof fetch,
+      apiBaseUrl: 'https://api.test',
+      now: () => '2024-05-05T10:00:00.000Z',
+      onStatus: (s) => statuses.push(s),
+    });
+    return { fs, service, last: () => statuses[statuses.length - 1], statuses };
+  }
+  const pending = (id: string, over: Partial<UserWordState> = {}) =>
+    word(id, { syncStatus: 'pending', ...over });
+  const failing = (status: number) => vi.fn(() => Promise.resolve({ ok: false, status } as Response));
+  it('records the last synced time and clears the error after a good pull', async () => {
+    const { service, last } = make([], vi.fn(() => jsonResponse({ items: [] })));
+    await service.syncOnLoad();
+    expect(last()).toEqual({ syncing: false, lastSyncedAt: '2024-05-05T10:00:00.000Z', error: null });
+  });
+  it('reports syncing while a pull runs', async () => {
+    const { service, statuses } = make([], vi.fn(() => jsonResponse({ items: [] })));
+    await service.syncOnLoad();
+    expect(statuses.some((s) => s.syncing)).toBe(true);
+    expect(statuses[statuses.length - 1].syncing).toBe(false);
+  });
+  it('shows a plain pull error and keeps local data when the pull fails', async () => {
+    const { fs, service, last } = make([pending('cat')], vi.fn(() => Promise.reject(new Error('offline'))));
+    await service.syncOnLoad();
+    expect(last().error).toBe(PULL_FAILED_MESSAGE);
+    expect(last().lastSyncedAt).toBeNull();
+    expect(fs.get()['cat'].syncStatus).toBe('pending');
+  });
+  it('shows a push error when a save fails, then clears it after a good save', async () => {
+    const fetchFn = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false, status: 500 } as Response)
+      .mockImplementation(() => jsonResponse({ accepted: ['cat'] }));
+    const { service, last } = make([pending('cat')], fetchFn);
+    await service.flush();
+    expect(last().error).toBe(PUSH_FAILED_MESSAGE);
+    service.dispose();
+    await service.flush();
+    expect(last().error).toBeNull();
+    expect(last().lastSyncedAt).toBe('2024-05-05T10:00:00.000Z');
+  });
+  it('asks the parent to log in again on 401 and 403', async () => {
+    for (const status of [401, 403]) {
+      const { service, last } = make([], failing(status));
+      await service.syncOnLoad();
+      expect(last().error).toBe(SIGN_IN_EXPIRED_MESSAGE);
+    }
+  });
+  it('shows the sign-in message when sync is on but there is no token', async () => {
+    const { service, last } = make([], vi.fn(), null);
+    await service.syncOnLoad();
+    expect(last().error).toBe(SIGN_IN_EXPIRED_MESSAGE);
+  });
+  it('never puts a status code or stack in a message', async () => {
+    const { service, last } = make([], failing(503));
+    await service.syncOnLoad();
+    expect(last().error).not.toMatch(/\d{3}|Error|at /);
+  });
+  it('skips a batch the API refuses and still sends the later ones', async () => {
+    const ids = Array.from({ length: 30 }, (_, i) => `w${i}`);
+    const fetchFn = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false, status: 400 } as Response)
+      .mockImplementation(() => jsonResponse({ accepted: ids.slice(25) }));
+    const { fs, service, last } = make(ids.map((id) => pending(id)), fetchFn);
+    await service.flush();
+    expect(fetchFn).toHaveBeenCalledTimes(2);
+    expect(fs.get()['w29'].syncStatus).toBe('synced');
+    expect(fs.get()['w0'].syncStatus).toBe('pending');
+    expect(last().error).toBe(PUSH_FAILED_MESSAGE);
+    service.dispose();
+  });
+  it('stops after a server error instead of trying every batch', async () => {
+    const ids = Array.from({ length: 60 }, (_, i) => `w${i}`);
+    const fetchFn = failing(500);
+    const { service } = make(ids.map((id) => pending(id)), fetchFn);
+    await service.flush();
+    expect(fetchFn).toHaveBeenCalledTimes(1);
+    service.dispose();
+  });
+  it('refresh pushes pending records, then pulls', async () => {
+    const fetchFn = vi.fn((_url: string, init: RequestInit) =>
+      init.method === 'PUT' ? jsonResponse({ accepted: ['cat'] }) : jsonResponse({ items: [cloud('cat'), cloud('dog')] }),
+    );
+    const { fs, service } = make([pending('cat')], fetchFn as unknown as ReturnType<typeof vi.fn>);
+    await service.refresh();
+    expect(fetchFn.mock.calls.map((c) => (c[1] as RequestInit).method)).toEqual(['PUT', 'GET']);
+    expect(fs.get()['cat'].syncStatus).toBe('synced');
+    expect(fs.get()['dog']).toBeDefined();
+  });
+  it('a second refresh while one runs joins it', async () => {
+    const fetchFn = vi.fn(() => jsonResponse({ items: [] }));
+    const { service } = make([], fetchFn);
+    await Promise.all([service.refresh(), service.refresh()]);
+    expect(fetchFn).toHaveBeenCalledTimes(1);
   });
 });

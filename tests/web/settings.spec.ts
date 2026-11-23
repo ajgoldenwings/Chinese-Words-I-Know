@@ -7,7 +7,7 @@ import { APP_STORAGE, AppStore, MemoryStorage } from '@shared/store';
 import { FlashcardComponent } from '../../src/web/app/screens/flashcard/flashcard.component';
 import { HomeComponent } from '../../src/web/app/screens/home/home.component';
 
-const FLAGS = ['showPinyin', 'showCharacters', 'audioEnabled', 'cloudSyncEnabled'] as const;
+const FLAGS = ['showPinyin', 'showCharacters', 'audioEnabled'] as const;
 const firstWord = loadContent().words.filter((w) => w.category === 'animals')[0];
 
 /** Boots a fresh app over the given storage, which simulates a page reload. */
@@ -53,30 +53,21 @@ describe('Settings panel', () => {
     expect(q('settings-panel')).toBeNull();
   });
 
-  it('Save to Cloud opens the account panel and stays off until signed in', async () => {
+  it('Save to Cloud is a button, not a toggle, and opens the account panel; the flag stays off until signed in', async () => {
     const { store, q, click } = await boot(new MemoryStorage());
     click('settings');
-    click('toggle-cloudSyncEnabled');
+    expect(q('toggle-cloudSyncEnabled')).toBeNull();
+    expect(q('cloud-logout')).toBeNull();
+    expect(q('sync-refresh')).toBeNull();
+    click('cloud-save');
     expect(q('account-panel')).not.toBeNull();
     expect(store.settings().cloudSyncEnabled).toBe(false);
-    expect((q('toggle-cloudSyncEnabled') as HTMLInputElement).checked).toBe(false);
     click('account-close');
     expect(q('account-panel')).toBeNull();
     expect(store.settings().cloudSyncEnabled).toBe(false);
   });
 
-  it('turning Save to Cloud off clears the flag and keeps it across reload', async () => {
-    const storage = new MemoryStorage();
-    const { store, click } = await boot(storage);
-    store.updateSettings({ cloudSyncEnabled: true });
-    click('settings');
-    click('toggle-cloudSyncEnabled');
-    expect(store.settings().cloudSyncEnabled).toBe(false);
-    const reloaded = await boot(storage);
-    expect(reloaded.store.settings().cloudSyncEnabled).toBe(false);
-  });
-
-  for (const flag of FLAGS.filter((f) => f !== 'cloudSyncEnabled')) {
+  for (const flag of FLAGS) {
     it(`${flag} toggle flips its flag and persists across reload`, async () => {
       const storage = new MemoryStorage();
       const { store, click } = await boot(storage);

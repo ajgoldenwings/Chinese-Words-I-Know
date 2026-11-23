@@ -134,7 +134,7 @@ UserSettings                       // stored locally at all times, independent o
   showPinyin: boolean         // default false — shows pinyin romanization under each word
   showCharacters: boolean     // default false — shows simplified Chinese characters
   audioEnabled: boolean       // default true — plays pre-recorded audio on card reveal and listen + tap mode
-  cloudSyncEnabled: boolean   // default false — enables Cognito sign-in and DynamoDB sync
+  cloudSyncEnabled: boolean   // default false — set true by signing in, false by logging out; enables DynamoDB sync. Shown as a Save to Cloud / Logout button, not a toggle
   // Additional boolean flags are added here as new features are introduced
 
 UserProfile                        // exists only once the user has signed in

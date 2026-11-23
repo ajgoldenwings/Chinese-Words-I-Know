@@ -1,5 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject, model, signal, untracked } from '@angular/core';
+import { AppStore } from '@shared/store';
 import { FieldErrorComponent, NotificationService } from '../../components';
 import { AuthService, type AuthFailure, type AuthField } from '../../services/auth.service';
 
@@ -18,7 +19,7 @@ const INPUT = 'min-h-11 w-full rounded-lg border-2 border-slate-400 px-3 py-2 te
 
 /**
  * Account overlay: sign up, verify, sign in, reset password, sign out.
- * Opened by setting `open` (two-way bindable), e.g. from Save to Cloud.
+ * Opened by setting `open` (two-way bindable), e.g. from the Save to Cloud button.
  * Bind it with `[(open)]="someSignal"`.
  */
 @Component({
@@ -53,7 +54,7 @@ const INPUT = 'min-h-11 w-full rounded-lg border-2 border-slate-400 px-3 py-2 te
             @case ('account') {
               <p class="text-lg" data-testid="account-signed-in">Signed in as {{ auth.email() }}.</p>
               <p class="text-base text-slate-600">Your progress on this device stays here when you sign out.</p>
-              <button type="button" [class]="primary" data-testid="account-sign-out" (click)="signOut()">Sign out</button>
+              <button type="button" [class]="primary" data-testid="account-sign-out" (click)="signOut()">Logout</button>
             }
             @case ('sign-in') {
               <form class="flex flex-col gap-3" novalidate (submit)="submit($event)">
@@ -160,6 +161,7 @@ const INPUT = 'min-h-11 w-full rounded-lg border-2 border-slate-400 px-3 py-2 te
 export class AccountPanelComponent {
   protected readonly auth = inject(AuthService);
   private readonly notifications = inject(NotificationService);
+  private readonly store = inject(AppStore);
 
   /** Two-way bindable. Set to true to show the panel. */
   readonly open = model(false);
@@ -312,12 +314,14 @@ export class AccountPanelComponent {
   }
 
   protected async signOut(): Promise<void> {
+    this.store.updateSettings({ cloudSyncEnabled: false });
     await this.auth.signOut();
-    this.notifications.showToast('Signed out. Your progress is saved on this device.');
+    this.notifications.showToast('Logged out. Your progress is saved on this device.');
     this.close();
   }
 
   private finish(message: string): void {
+    this.store.updateSettings({ cloudSyncEnabled: true });
     this.notifications.showToast(message);
     this.close();
   }

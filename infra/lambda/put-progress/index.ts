@@ -36,7 +36,8 @@ function parseRecord(value: unknown): ProgressRecord | undefined {
     typeof r.timesSeenCount !== 'number' ||
     !Number.isInteger(r.timesSeenCount) ||
     r.timesSeenCount < 0 ||
-    !isIso(r.lastSeenAt) ||
+    // An empty string means the word has never been seen (for example, only a parent override).
+    !(r.lastSeenAt === '' || isIso(r.lastSeenAt)) ||
     typeof r.manualOverride !== 'string' ||
     !OVERRIDES.includes(r.manualOverride) ||
     !isIso(r.updatedAt)

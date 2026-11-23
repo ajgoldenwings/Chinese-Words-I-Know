@@ -52,7 +52,7 @@ Client sync behavior is described in [Cloud Sync](sync.md).
 | `wordId` (SK) | String | Word slug e.g. `mao` |
 | `confidenceScore` | Number | `0.0` – `1.0` |
 | `timesSeenCount` | Number | Total answered prompts where this word was the target |
-| `lastSeenAt` | String | ISO 8601 timestamp |
+| `lastSeenAt` | String | ISO 8601 timestamp, or `""` for a word the child has never seen (for example, one with only a parent override) |
 | `manualOverride` | String | `"known"` \| `"unknown"` \| `"none"` |
 | `updatedAt` | String | ISO 8601 timestamp of last write — used for conflict resolution |
 

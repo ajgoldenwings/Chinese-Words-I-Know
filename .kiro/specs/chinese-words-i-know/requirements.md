@@ -26,4 +26,4 @@ Tasks cite these by number (for example `_Requirements: 5, 6_`).
 10. **Progressive disclosure:** Settings and complexity are hidden by default and revealed intentionally. No menus on first use
 11. **Platform:** Web app first. Folder structure supports future iOS and Android targets (`src/ios`, `src/android`) via Capacitor
 12. **Scope:** ~1000 words max for this version
-13. **Progress sync:** Progress is always saved on the device. A parent can optionally create an account so progress also syncs to the cloud and survives a device change or reinstall. Sync is off by default, and the app works fully without an account
+13. **Progress sync:** Progress is always saved on the device. A parent can optionally create an account so progress also syncs to the cloud and survives a device change or reinstall. Sync is off by default, and the app works fully without an account. Settings shows a Save to Cloud button (Logout once signed in), the time of the last successful sync, a refresh icon that syncs on demand, and a plain-language error when a sync fails

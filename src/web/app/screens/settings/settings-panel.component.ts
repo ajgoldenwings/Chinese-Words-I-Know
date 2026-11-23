@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, effect, inject, output, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
 import type { UserSettings } from '@shared/entities';
 import { AppStore } from '@shared/store';
+import { NotificationService } from '../../components';
 import { AuthService } from '../../services/auth.service';
+import { SyncStatusService } from '../../services/sync-status.service';
 import { AccountPanelComponent } from '../account/account-panel.component';
 
-type BooleanFlag = 'showPinyin' | 'showCharacters' | 'audioEnabled' | 'cloudSyncEnabled';
+type BooleanFlag = 'showPinyin' | 'showCharacters' | 'audioEnabled';
 
 interface SettingRow {
   readonly key: BooleanFlag;
@@ -17,8 +19,8 @@ export const SETTING_ROWS: readonly SettingRow[] = [
   { key: 'showPinyin', label: 'Show Pinyin', description: 'Show how each word is pronounced, in letters, under the picture.' },
   { key: 'showCharacters', label: 'Show Characters', description: 'Show the Chinese characters for each word under the picture.' },
   { key: 'audioEnabled', label: 'Audio', description: 'Play a recording of each word when a card is turned over.' },
-  { key: 'cloudSyncEnabled', label: 'Save to Cloud', description: 'Keep your progress safe and share it between devices.' },
 ];
+const CLOUD_DESCRIPTION = 'Keep your progress safe and share it between devices.';
 
 /** Slide-in settings overlay. Opened only by the gear on the home screen. */
 @Component({
@@ -64,6 +66,34 @@ export const SETTING_ROWS: readonly SettingRow[] = [
             />
           </label>
         }
+        <div class="flex flex-col gap-2 py-3" data-testid="cloud-section">
+          <span class="block text-lg font-medium">Save to Cloud</span>
+          @if (auth.signedIn()) {
+            <span class="block text-sm text-slate-600" data-testid="cloud-email">Signed in as {{ auth.email() }}</span>
+            <div class="flex items-center gap-2">
+              <span class="flex-1 text-sm text-slate-600" data-testid="sync-last">{{ lastSyncedText() }}</span>
+              <button
+                type="button"
+                class="flex min-h-11 min-w-11 items-center justify-center rounded-full border border-slate-300 text-2xl disabled:opacity-60"
+                aria-label="Sync now"
+                data-testid="sync-refresh"
+                [disabled]="syncStatus.status().syncing"
+                (click)="refresh()"
+              >
+                <span [class.animate-spin]="syncStatus.status().syncing" class="inline-block" aria-hidden="true">⟳</span>
+              </button>
+            </div>
+            @if (syncStatus.status().error; as error) {
+              <p class="rounded-lg border-2 border-red-700 bg-red-50 p-3 text-sm text-red-900" role="alert" data-testid="sync-error">
+                ⚠ {{ error }}
+              </p>
+            }
+            <button type="button" [class]="button" data-testid="cloud-logout" (click)="logout()">Logout</button>
+          } @else {
+            <span class="block text-sm text-slate-600">{{ cloudDescription }}</span>
+            <button type="button" [class]="button" data-testid="cloud-save" (click)="accountOpen.set(true)">Save to Cloud</button>
+          }
+        </div>
       </section>
     </div>
     <app-account-panel [(open)]="accountOpen" />
@@ -71,45 +101,33 @@ export const SETTING_ROWS: readonly SettingRow[] = [
 })
 export class SettingsPanelComponent {
   protected readonly store = inject(AppStore);
-  private readonly auth = inject(AuthService);
+  protected readonly auth = inject(AuthService);
+  protected readonly syncStatus = inject(SyncStatusService);
+  private readonly notifications = inject(NotificationService);
   protected readonly rows = SETTING_ROWS;
+  protected readonly cloudDescription = CLOUD_DESCRIPTION;
+  protected readonly button =
+    'min-h-11 min-w-11 w-full rounded-xl bg-slate-800 px-5 py-3 text-lg font-semibold text-white';
   readonly closed = output<void>();
   protected readonly accountOpen = signal(false);
-  private readonly pendingCloud = signal(false);
-
-  constructor() {
-    // Save to Cloud turns on only once the parent is signed in.
-    effect(() => {
-      if (!this.pendingCloud()) return;
-      if (this.auth.signedIn()) {
-        untracked(() => {
-          this.store.updateSettings({ cloudSyncEnabled: true });
-          this.pendingCloud.set(false);
-        });
-      } else if (!this.accountOpen()) {
-        untracked(() => this.pendingCloud.set(false));
-      }
-    });
-  }
-
+  protected readonly lastSyncedText = computed(() => {
+    const at = this.syncStatus.status().lastSyncedAt;
+    if (!at) return 'Not synced yet';
+    const date = new Date(at);
+    if (Number.isNaN(date.getTime())) return 'Not synced yet';
+    return `Last synced: ${date.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}`;
+  });
   protected toggle(key: BooleanFlag, event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const value = input.checked;
-    if (key === 'cloudSyncEnabled') {
-      if (value && !this.auth.signedIn()) {
-        // Stay off until sign-in succeeds. Closing the panel leaves it off.
-        input.checked = false;
-        this.pendingCloud.set(true);
-        this.accountOpen.set(true);
-        return;
-      }
-      if (!value) {
-        this.pendingCloud.set(false);
-        this.accountOpen.set(false);
-        void this.auth.signOut();
-      }
-    }
-    const changes: Partial<UserSettings> = { [key]: value };
+    const changes: Partial<UserSettings> = { [key]: (event.target as HTMLInputElement).checked };
     this.store.updateSettings(changes);
+  }
+  protected refresh(): void {
+    void this.syncStatus.refresh();
+  }
+  /** Signs out and turns cloud sync off. Progress on the device stays. */
+  protected async logout(): Promise<void> {
+    this.store.updateSettings({ cloudSyncEnabled: false });
+    await this.auth.signOut();
+    this.notifications.showToast('Logged out. Your progress is saved on this device.');
   }
 }

@@ -6,6 +6,7 @@ import { APP_STORAGE, AppStore, MemoryStorage, createDefaultWordState } from '@s
 import { NotificationService } from '../../src/web/app/components';
 import { HomeComponent } from '../../src/web/app/screens/home/home.component';
 import { AUTH_CONFIG, AuthService } from '../../src/web/app/services/auth.service';
+import { SyncStatusService } from '../../src/web/app/services/sync-status.service';
 
 const amplify = vi.hoisted(() => ({
   configure: vi.fn(),
@@ -159,7 +160,7 @@ describe('Account panel', () => {
       await settle();
     };
     click('settings');
-    click('toggle-cloudSyncEnabled');
+    click('cloud-save');
     return { harness, q, click, type, submit, settle };
   }
 
@@ -242,10 +243,54 @@ describe('Account panel', () => {
     harness.detectChanges();
     expect(store.settings().cloudSyncEnabled).toBe(true);
     expect(q('account-panel')).toBeNull();
-    expect((q('toggle-cloudSyncEnabled') as HTMLInputElement).checked).toBe(true);
+    expect(q('cloud-save')).toBeNull();
+    expect(q('cloud-logout')?.textContent?.trim()).toBe('Logout');
   });
 
-  it('turning Save to Cloud off signs out and keeps word states untouched', async () => {
+  describe('sync status in the Cloud section', () => {
+    async function signedIn() {
+      const ctx = await open();
+      amplify.signIn.mockResolvedValue({ isSignedIn: true, nextStep: { signInStep: 'DONE' } });
+      ctx.type('account-email', 'a@b.co');
+      ctx.type('account-password', 'Passw0rdx');
+      await ctx.submit();
+      ctx.harness.detectChanges();
+      return { ...ctx, status: TestBed.inject(SyncStatusService) };
+    }
+    it('shows Not synced yet, then the last synced date', async () => {
+      const { harness, q, status } = await signedIn();
+      expect(q('sync-last')?.textContent).toContain('Not synced yet');
+      status.apply({ syncing: false, lastSyncedAt: '2024-05-05T10:00:00.000Z', error: null });
+      harness.detectChanges();
+      expect(q('sync-last')?.textContent).toContain('Last synced:');
+      expect(q('sync-last')?.textContent).toContain('2024');
+    });
+    it('refresh icon runs a sync and is disabled while one runs', async () => {
+      const { harness, q, click, status } = await signedIn();
+      const refresh = vi.fn(() => Promise.resolve());
+      status.attach(refresh);
+      expect((q('sync-refresh') as HTMLButtonElement).getAttribute('aria-label')).toBe('Sync now');
+      click('sync-refresh');
+      expect(refresh).toHaveBeenCalledTimes(1);
+      status.apply({ syncing: true, lastSyncedAt: null, error: null });
+      harness.detectChanges();
+      expect((q('sync-refresh') as HTMLButtonElement).disabled).toBe(true);
+      click('sync-refresh');
+      expect(refresh).toHaveBeenCalledTimes(1);
+    });
+    it('shows a sync error as an alert, and removes it after a good sync', async () => {
+      const { harness, q, status } = await signedIn();
+      expect(q('sync-error')).toBeNull();
+      status.apply({ syncing: false, lastSyncedAt: null, error: 'Your progress is not saved to the cloud yet. It will try again.' });
+      harness.detectChanges();
+      expect(q('sync-error')?.getAttribute('role')).toBe('alert');
+      expect(q('sync-error')?.textContent).toContain('not saved to the cloud yet');
+      status.apply({ syncing: false, lastSyncedAt: '2024-05-05T10:00:00.000Z', error: null });
+      harness.detectChanges();
+      expect(q('sync-error')).toBeNull();
+    });
+  });
+  it('Logout signs out and keeps word states untouched', async () => {
     const { harness, q, click, type, submit } = await open();
     const store = TestBed.inject(AppStore);
     store.setWordState({ ...createDefaultWordState('cat'), confidenceScore: 0.67, timesSeenCount: 3 });
@@ -256,13 +301,16 @@ describe('Account panel', () => {
     await submit();
     harness.detectChanges();
     amplify.signOut.mockResolvedValue(undefined);
-    click('toggle-cloudSyncEnabled');
+    click('cloud-logout');
     await harness.fixture.whenStable();
+    harness.detectChanges();
     expect(amplify.signOut).toHaveBeenCalled();
     expect(TestBed.inject(AuthService).signedIn()).toBe(false);
     expect(store.settings().cloudSyncEnabled).toBe(false);
     expect(store.wordStates()).toEqual(before);
     expect(q('account-panel')).toBeNull();
+    expect(q('cloud-save')).not.toBeNull();
+    expect(q('cloud-logout')).toBeNull();
   });
 
   it('signing out of a restored session leaves word states untouched', async () => {

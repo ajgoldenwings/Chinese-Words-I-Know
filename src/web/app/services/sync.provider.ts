@@ -11,7 +11,9 @@ import type { UserWordState } from '@shared/entities';
 import { AppStore } from '@shared/store';
 import { SyncService } from '@shared/sync';
 import { environment } from '../../environments/environment';
+import { NotificationService } from '../components';
 import { AuthService } from './auth.service';
+import { SyncStatusService } from './sync-status.service';
 
 /** Base URL of the sync API. Empty means cloud sync is not set up and the wiring stays inert. */
 export const SYNC_API_URL = new InjectionToken<string>('SYNC_API_URL', {
@@ -45,17 +47,41 @@ export function startSync(): SyncService | null {
   const auth = inject(AuthService);
   // Restore the signed-in state either way. It does nothing when Cognito is not configured.
   void auth.restore();
+  const store = inject(AppStore);
+  // Signing in turns cloud sync on and logging out turns it off, on every device.
+  // The first value is not a change, so a signed-out start leaves the saved flag alone.
+  let wasSignedIn = false;
+  effect(() => {
+    const signedIn = auth.signedIn();
+    untracked(() => {
+      if (signedIn !== wasSignedIn) {
+        store.updateSettings({ cloudSyncEnabled: signedIn });
+        wasSignedIn = signedIn;
+      }
+    });
+  });
   if (!apiUrl) {
     return null;
   }
-  const store = inject(AppStore);
+  const status = inject(SyncStatusService);
+  const notifications = inject(NotificationService);
+  let hadError = false;
   const getToken = inject(SYNC_GET_TOKEN);
 
   const sync = new SyncService({
     store,
     apiBaseUrl: apiUrl,
     getToken: async () => (auth.signedIn() ? getToken() : null),
+    onStatus: (info) => {
+      status.apply(info);
+      // Tell the parent once when sync starts failing, not on every retry.
+      if (info.error && !hadError) {
+        notifications.showToast('Progress not saved to cloud — will retry.');
+      }
+      hadError = info.error !== null;
+    },
   });
+  status.attach(() => sync.refresh());
   sync.start();
 
   // Mark local edits dirty. Records already marked synced (from the cloud or after a flush) are skipped.

@@ -335,6 +335,25 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
   - Ensure all tests pass, ask the user if questions arise.
   - Demo: `ng test --no-watch` and the CDK tests pass, and the full flow works: Start Now, flashcards, listen and tap, My Words, settings, offline, and sync
 
+- [x] 20. Fix cloud sync between devices and rework Save to Cloud
+  - Fix words not matching across devices, replace the Save to Cloud toggle with a button, and show sync status. See [Cloud Sync](cloud/sync.md#sync-status-and-refresh) and [Progressive Disclosure](ux/progressive-disclosure.md)
+  - Demo: sign in on two devices, change a word on one, tap the refresh icon on the other, and the word matches. Turning off the network and tapping refresh shows a plain-language error
+  - [x] 20.1 Fix the sync causes
+    - `PutProgress` accepts `""` for `lastSeenAt`
+    - `SyncService` skips a batch the API refuses (4xx other than 401 and 403) and sends the remaining batches
+    - Signing in sets `cloudSyncEnabled` to true and logging out sets it to false
+    - _Requirements: 8, 13_
+  - [x] 20.2 Report sync status
+    - `SyncService` reports `syncing`, `lastSyncedAt`, and a plain-language `error`, and has `refresh()`
+    - Add `SyncStatusService` and show a toast when sync moves from working to failed
+    - _Requirements: 13_
+  - [x] 20.3 Rework the Cloud section of settings
+    - Replace the Save to Cloud toggle with a button that becomes Logout once signed in
+    - When signed in, show the last synced time, a refresh icon button (at least 44×44pt), and the sync error if any
+    - _Requirements: 10, 13_
+  - [x] 20.4 Write tests
+    - Status, error, and refresh cases in the sync tests; skipped batch; the Lambda accepts an empty `lastSeenAt`; settings and account tests updated for the button
+    - _Requirements: 13_
 ## Notes
 
 - The design has no Correctness Properties section, so this plan uses unit and integration tests only and no property-based tests
@@ -364,7 +383,10 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
     { "id": 15, "tasks": ["14.2", "14.3", "17.2", "18.1"] },
     { "id": 16, "tasks": ["16.3", "17.3", "18.2"] },
     { "id": 17, "tasks": ["18.3"] },
-    { "id": 18, "tasks": ["19"] }
+    { "id": 18, "tasks": ["19"] },
+    { "id": 19, "tasks": ["20.1"] },
+    { "id": 20, "tasks": ["20.2", "20.4"] },
+    { "id": 21, "tasks": ["20.3"] }
   ]
 }
 ```
