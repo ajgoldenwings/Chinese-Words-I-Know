@@ -1,0 +1,75 @@
+<main class="relative min-h-dvh bg-white p-4 pt-14 text-slate-900">
+  <a
+    routerLink="/"
+    aria-label="Back"
+    data-testid="back"
+    class="absolute left-2 top-2 z-10 flex size-11 items-center justify-center rounded-full text-xl opacity-30"
+    >←</a
+  >
+  <h1 class="mb-4 text-3xl font-semibold">My Words</h1>
+  @for (section of sections(); track section.id) {
+    <section class="mb-8" [attr.data-testid]="'list-' + section.id">
+      <h2 class="mb-3 text-2xl font-semibold">{{ section.title }}</h2>
+      @if (section.words.length) {
+        <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+          @for (w of section.words; track w.id) {
+            <li data-testid="word-entry">
+              <button
+                type="button"
+                class="flex min-h-11 w-full select-none flex-col items-center gap-2 rounded-lg border border-slate-200 p-3"
+                data-testid="word-button"
+                [attr.aria-label]="w.english + ', open details'"
+                (click)="open(w)"
+                (appLongPress)="openMenu(w)"
+              >
+                @if (imageUrl(w); as url) {
+                  <img [src]="url" [alt]="w.english" class="size-20 object-contain" (error)="onImageError(w)" />
+                } @else {
+                  <span class="flex size-20 items-center justify-center text-5xl leading-none" aria-hidden="true">{{ emoji(w) }}</span>
+                }
+                <span class="text-center text-lg">{{ w.english }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="text-slate-600">{{ section.empty }}</p>
+      }
+    </section>
+  }
+  @if (selected(); as w) {
+    <div
+      class="fixed inset-0 z-20 flex items-center justify-center bg-black/40 p-4"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="w.english"
+      data-testid="detail"
+    >
+      <div class="flex max-h-full w-full max-w-md flex-col items-center gap-3 overflow-y-auto rounded-2xl bg-white p-6">
+        @if (imageUrl(w); as url) {
+          <img [src]="url" [alt]="w.english" class="size-48 object-contain" (error)="onImageError(w)" />
+        } @else {
+          <span class="flex size-48 items-center justify-center text-9xl leading-none" aria-hidden="true">{{ emoji(w) }}</span>
+        }
+        <p class="text-3xl font-semibold" data-testid="detail-english">{{ w.english }}</p>
+        @if (display(); as d) {
+          @if (d.showPinyin) {
+            <p class="pinyin text-2xl text-slate-600">{{ w.pinyin }}</p>
+          }
+          @if (d.showCharacters) {
+            <p class="characters text-5xl">{{ w.simplified }}</p>
+          }
+        }
+        <p class="text-slate-600" data-testid="detail-status">{{ selectedStatus() }}</p>
+        @if (menuOpen()) {
+          <p class="text-slate-600">What would you like to do with this word?</p>
+        }
+        <div class="flex w-full flex-col gap-2">
+          <button type="button" class="min-h-11 rounded-lg border-2 border-slate-900 px-4 py-2 text-lg" data-testid="mark-known" (click)="markAs('known')">Mark as Known</button>
+          <button type="button" class="min-h-11 rounded-lg border-2 border-dashed border-slate-900 px-4 py-2 text-lg" data-testid="mark-unknown" (click)="markAs('unknown')">Mark as Unknown</button>
+          <button type="button" class="min-h-11 rounded-lg px-4 py-2 text-lg text-slate-600" data-testid="detail-close" (click)="close()">Close</button>
+        </div>
+      </div>
+    </div>
+  }
+</main>

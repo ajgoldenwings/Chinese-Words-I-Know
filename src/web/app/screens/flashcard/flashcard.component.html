@@ -1,0 +1,53 @@
+<main class="relative flex h-dvh flex-col bg-white text-slate-900">
+  <a
+    routerLink="/"
+    aria-label="Back"
+    class="absolute left-2 top-2 z-10 flex size-11 items-center justify-center rounded-full text-xl opacity-30"
+    >←</a
+  >
+
+  @if (word(); as w) {
+    <button
+      type="button"
+      class="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 p-4"
+      [attr.aria-label]="revealed() ? w.english : 'Tap to hear ' + w.english"
+      (click)="reveal()"
+    >
+      @if (imageUrl(); as url) {
+        <img [src]="url" [alt]="w.english" class="min-h-0 w-full flex-1 object-contain" (error)="onImageError()" />
+      } @else {
+        <span class="flex min-h-0 flex-1 items-center justify-center text-[10rem] leading-none" aria-hidden="true">{{ emoji() }}</span>
+      }
+      <span class="text-4xl font-semibold">{{ w.english }}</span>
+      @if (display(); as d) {
+        @if (d.showPinyin) {
+          <span class="pinyin text-2xl text-slate-600">{{ w.pinyin }}</span>
+        }
+        @if (d.showCharacters) {
+          <span class="characters text-5xl">{{ w.simplified }}</span>
+        }
+      }
+    </button>
+
+    @if (revealed()) {
+      <div class="flex justify-center gap-8 p-6">
+        <button
+          type="button"
+          class="got-it flex size-24 items-center justify-center rounded-full border-4 border-slate-900 bg-slate-100 text-5xl"
+          aria-label="Got it"
+          (click)="gotIt()"
+        >✓</button>
+        <button
+          type="button"
+          class="not-yet flex size-24 items-center justify-center rounded-md border-4 border-dashed border-slate-900 bg-white text-5xl"
+          aria-label="Not yet"
+          (click)="notYet()"
+        >✗</button>
+      </div>
+    } @else {
+      <div class="h-36" aria-hidden="true"></div>
+    }
+  } @else {
+    <p class="m-auto p-6 text-center text-xl">There are no words in this category yet.</p>
+  }
+</main>

@@ -1,0 +1,1859 @@
+{
+  "contentVersion": 4,
+  "hskEdition": "HSK 2.0 (2012)",
+  "words": [
+    {
+      "id": "mao",
+      "simplified": "猫",
+      "pinyin": "māo",
+      "english": "Cat",
+      "category": "animals",
+      "imageAsset": "mao",
+      "audioAsset": "mao",
+      "tags": [
+        "animals",
+        "pets"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "gou",
+      "simplified": "狗",
+      "pinyin": "gǒu",
+      "english": "Dog",
+      "category": "animals",
+      "imageAsset": "gou",
+      "audioAsset": "gou",
+      "tags": [
+        "animals",
+        "pets"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "yu",
+      "simplified": "鱼",
+      "pinyin": "yú",
+      "english": "Fish",
+      "category": "animals",
+      "imageAsset": "yu",
+      "audioAsset": "yu",
+      "tags": [
+        "animals",
+        "pets"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "niao",
+      "simplified": "鸟",
+      "pinyin": "niǎo",
+      "english": "Bird",
+      "category": "animals",
+      "imageAsset": "niao",
+      "audioAsset": "niao",
+      "tags": [
+        "animals",
+        "wild"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "tu-zi",
+      "simplified": "兔子",
+      "pinyin": "tùzi",
+      "english": "Rabbit",
+      "category": "animals",
+      "imageAsset": "tu-zi",
+      "audioAsset": "tu-zi",
+      "tags": [
+        "animals",
+        "pets"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "xiong",
+      "simplified": "熊",
+      "pinyin": "xióng",
+      "english": "Bear",
+      "category": "animals",
+      "imageAsset": "xiong",
+      "audioAsset": "xiong",
+      "tags": [
+        "animals",
+        "wild"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "xiong-mao",
+      "simplified": "熊猫",
+      "pinyin": "xióngmāo",
+      "english": "Panda",
+      "category": "animals",
+      "imageAsset": "xiong-mao",
+      "audioAsset": "xiong-mao",
+      "tags": [
+        "animals",
+        "wild"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "lao-hu",
+      "simplified": "老虎",
+      "pinyin": "lǎohǔ",
+      "english": "Tiger",
+      "category": "animals",
+      "imageAsset": "lao-hu",
+      "audioAsset": "lao-hu",
+      "tags": [
+        "animals",
+        "wild"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "shi-zi",
+      "simplified": "狮子",
+      "pinyin": "shīzi",
+      "english": "Lion",
+      "category": "animals",
+      "imageAsset": "shi-zi",
+      "audioAsset": "shi-zi",
+      "tags": [
+        "animals",
+        "wild"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "da-xiang",
+      "simplified": "大象",
+      "pinyin": "dàxiàng",
+      "english": "Elephant",
+      "category": "animals",
+      "imageAsset": "da-xiang",
+      "audioAsset": "da-xiang",
+      "tags": [
+        "animals",
+        "wild"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "hou-zi",
+      "simplified": "猴子",
+      "pinyin": "hóuzi",
+      "english": "Monkey",
+      "category": "animals",
+      "imageAsset": "hou-zi",
+      "audioAsset": "hou-zi",
+      "tags": [
+        "animals",
+        "wild"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "zhu",
+      "simplified": "猪",
+      "pinyin": "zhū",
+      "english": "Pig",
+      "category": "animals",
+      "imageAsset": "zhu",
+      "audioAsset": "zhu",
+      "tags": [
+        "animals",
+        "farm"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "niu",
+      "simplified": "牛",
+      "pinyin": "niú",
+      "english": "Cow",
+      "category": "animals",
+      "imageAsset": "niu",
+      "audioAsset": "niu",
+      "tags": [
+        "animals",
+        "farm"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "ma",
+      "simplified": "马",
+      "pinyin": "mǎ",
+      "english": "Horse",
+      "category": "animals",
+      "imageAsset": "ma",
+      "audioAsset": "ma",
+      "tags": [
+        "animals",
+        "farm"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "yang",
+      "simplified": "羊",
+      "pinyin": "yáng",
+      "english": "Sheep",
+      "category": "animals",
+      "imageAsset": "yang",
+      "audioAsset": "yang",
+      "tags": [
+        "animals",
+        "farm"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "ji",
+      "simplified": "鸡",
+      "pinyin": "jī",
+      "english": "Chicken",
+      "category": "animals",
+      "imageAsset": "ji",
+      "audioAsset": "ji",
+      "tags": [
+        "animals",
+        "farm"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "ya-zi",
+      "simplified": "鸭子",
+      "pinyin": "yāzi",
+      "english": "Duck",
+      "category": "animals",
+      "imageAsset": "ya-zi",
+      "audioAsset": "ya-zi",
+      "tags": [
+        "animals",
+        "farm"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "qing-wa",
+      "simplified": "青蛙",
+      "pinyin": "qīngwā",
+      "english": "Frog",
+      "category": "animals",
+      "imageAsset": "qing-wa",
+      "audioAsset": "qing-wa",
+      "tags": [
+        "animals",
+        "wild"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "she",
+      "simplified": "蛇",
+      "pinyin": "shé",
+      "english": "Snake",
+      "category": "animals",
+      "imageAsset": "she",
+      "audioAsset": "she",
+      "tags": [
+        "animals",
+        "wild"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "wu-gui",
+      "simplified": "乌龟",
+      "pinyin": "wūguī",
+      "english": "Turtle",
+      "category": "animals",
+      "imageAsset": "wu-gui",
+      "audioAsset": "wu-gui",
+      "tags": [
+        "animals",
+        "pets"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "ping-guo",
+      "simplified": "苹果",
+      "pinyin": "píngguǒ",
+      "english": "Apple",
+      "category": "food",
+      "imageAsset": "ping-guo",
+      "audioAsset": "ping-guo",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "xiang-jiao",
+      "simplified": "香蕉",
+      "pinyin": "xiāngjiāo",
+      "english": "Banana",
+      "category": "food",
+      "imageAsset": "xiang-jiao",
+      "audioAsset": "xiang-jiao",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "cheng-zi",
+      "simplified": "橙子",
+      "pinyin": "chéngzi",
+      "english": "Orange",
+      "category": "food",
+      "imageAsset": "cheng-zi",
+      "audioAsset": "cheng-zi",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "pu-tao",
+      "simplified": "葡萄",
+      "pinyin": "pútáo",
+      "english": "Grape",
+      "category": "food",
+      "imageAsset": "pu-tao",
+      "audioAsset": "pu-tao",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "cao-mei",
+      "simplified": "草莓",
+      "pinyin": "cǎoméi",
+      "english": "Strawberry",
+      "category": "food",
+      "imageAsset": "cao-mei",
+      "audioAsset": "cao-mei",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "xi-gua",
+      "simplified": "西瓜",
+      "pinyin": "xīguā",
+      "english": "Watermelon",
+      "category": "food",
+      "imageAsset": "xi-gua",
+      "audioAsset": "xi-gua",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "mi-fan",
+      "simplified": "米饭",
+      "pinyin": "mǐfàn",
+      "english": "Rice",
+      "category": "food",
+      "imageAsset": "mi-fan",
+      "audioAsset": "mi-fan",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "mian-tiao",
+      "simplified": "面条",
+      "pinyin": "miàntiáo",
+      "english": "Noodles",
+      "category": "food",
+      "imageAsset": "mian-tiao",
+      "audioAsset": "mian-tiao",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "mian-bao",
+      "simplified": "面包",
+      "pinyin": "miànbāo",
+      "english": "Bread",
+      "category": "food",
+      "imageAsset": "mian-bao",
+      "audioAsset": "mian-bao",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "ji-dan",
+      "simplified": "鸡蛋",
+      "pinyin": "jīdàn",
+      "english": "Egg",
+      "category": "food",
+      "imageAsset": "ji-dan",
+      "audioAsset": "ji-dan",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "niu-nai",
+      "simplified": "牛奶",
+      "pinyin": "niúnǎi",
+      "english": "Milk",
+      "category": "food",
+      "imageAsset": "niu-nai",
+      "audioAsset": "niu-nai",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "shui",
+      "simplified": "水",
+      "pinyin": "shuǐ",
+      "english": "Water",
+      "category": "food",
+      "imageAsset": "shui",
+      "audioAsset": "shui",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "guo-zhi",
+      "simplified": "果汁",
+      "pinyin": "guǒzhī",
+      "english": "Juice",
+      "category": "food",
+      "imageAsset": "guo-zhi",
+      "audioAsset": "guo-zhi",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "cha",
+      "simplified": "茶",
+      "pinyin": "chá",
+      "english": "Tea",
+      "category": "food",
+      "imageAsset": "cha",
+      "audioAsset": "cha",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "dan-gao",
+      "simplified": "蛋糕",
+      "pinyin": "dàngāo",
+      "english": "Cake",
+      "category": "food",
+      "imageAsset": "dan-gao",
+      "audioAsset": "dan-gao",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "bing-gan",
+      "simplified": "饼干",
+      "pinyin": "bǐnggān",
+      "english": "Cookie",
+      "category": "food",
+      "imageAsset": "bing-gan",
+      "audioAsset": "bing-gan",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "bing-qi-lin",
+      "simplified": "冰淇淋",
+      "pinyin": "bīngqílín",
+      "english": "Ice cream",
+      "category": "food",
+      "imageAsset": "bing-qi-lin",
+      "audioAsset": "bing-qi-lin",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "tang-guo",
+      "simplified": "糖果",
+      "pinyin": "tángguǒ",
+      "english": "Candy",
+      "category": "food",
+      "imageAsset": "tang-guo",
+      "audioAsset": "tang-guo",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "tang",
+      "simplified": "汤",
+      "pinyin": "tāng",
+      "english": "Soup",
+      "category": "food",
+      "imageAsset": "tang",
+      "audioAsset": "tang",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "dou-fu",
+      "simplified": "豆腐",
+      "pinyin": "dòufu",
+      "english": "Tofu",
+      "category": "food",
+      "imageAsset": "dou-fu",
+      "audioAsset": "dou-fu",
+      "tags": [
+        "food"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "hong-se",
+      "simplified": "红色",
+      "pinyin": "hóngsè",
+      "english": "Red",
+      "category": "colors",
+      "imageAsset": "hong-se",
+      "audioAsset": "hong-se",
+      "tags": [
+        "colors"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "lan-se",
+      "simplified": "蓝色",
+      "pinyin": "lánsè",
+      "english": "Blue",
+      "category": "colors",
+      "imageAsset": "lan-se",
+      "audioAsset": "lan-se",
+      "tags": [
+        "colors"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "huang-se",
+      "simplified": "黄色",
+      "pinyin": "huángsè",
+      "english": "Yellow",
+      "category": "colors",
+      "imageAsset": "huang-se",
+      "audioAsset": "huang-se",
+      "tags": [
+        "colors"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "lv-se",
+      "simplified": "绿色",
+      "pinyin": "lǜsè",
+      "english": "Green",
+      "category": "colors",
+      "imageAsset": "lv-se",
+      "audioAsset": "lv-se",
+      "tags": [
+        "colors"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "cheng-se",
+      "simplified": "橙色",
+      "pinyin": "chéngsè",
+      "english": "Orange",
+      "category": "colors",
+      "imageAsset": "cheng-se",
+      "audioAsset": "cheng-se",
+      "tags": [
+        "colors"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "zi-se",
+      "simplified": "紫色",
+      "pinyin": "zǐsè",
+      "english": "Purple",
+      "category": "colors",
+      "imageAsset": "zi-se",
+      "audioAsset": "zi-se",
+      "tags": [
+        "colors"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "fen-se",
+      "simplified": "粉色",
+      "pinyin": "fěnsè",
+      "english": "Pink",
+      "category": "colors",
+      "imageAsset": "fen-se",
+      "audioAsset": "fen-se",
+      "tags": [
+        "colors"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "bai-se",
+      "simplified": "白色",
+      "pinyin": "báisè",
+      "english": "White",
+      "category": "colors",
+      "imageAsset": "bai-se",
+      "audioAsset": "bai-se",
+      "tags": [
+        "colors"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "hei-se",
+      "simplified": "黑色",
+      "pinyin": "hēisè",
+      "english": "Black",
+      "category": "colors",
+      "imageAsset": "hei-se",
+      "audioAsset": "hei-se",
+      "tags": [
+        "colors"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "zong-se",
+      "simplified": "棕色",
+      "pinyin": "zōngsè",
+      "english": "Brown",
+      "category": "colors",
+      "imageAsset": "zong-se",
+      "audioAsset": "zong-se",
+      "tags": [
+        "colors"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "yi",
+      "simplified": "一",
+      "pinyin": "yī",
+      "english": "One",
+      "category": "numbers",
+      "imageAsset": "yi",
+      "audioAsset": "yi",
+      "tags": [
+        "numbers"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "er",
+      "simplified": "二",
+      "pinyin": "èr",
+      "english": "Two",
+      "category": "numbers",
+      "imageAsset": "er",
+      "audioAsset": "er",
+      "tags": [
+        "numbers"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "san",
+      "simplified": "三",
+      "pinyin": "sān",
+      "english": "Three",
+      "category": "numbers",
+      "imageAsset": "san",
+      "audioAsset": "san",
+      "tags": [
+        "numbers"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "si",
+      "simplified": "四",
+      "pinyin": "sì",
+      "english": "Four",
+      "category": "numbers",
+      "imageAsset": "si",
+      "audioAsset": "si",
+      "tags": [
+        "numbers"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "wu",
+      "simplified": "五",
+      "pinyin": "wǔ",
+      "english": "Five",
+      "category": "numbers",
+      "imageAsset": "wu",
+      "audioAsset": "wu",
+      "tags": [
+        "numbers"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "liu",
+      "simplified": "六",
+      "pinyin": "liù",
+      "english": "Six",
+      "category": "numbers",
+      "imageAsset": "liu",
+      "audioAsset": "liu",
+      "tags": [
+        "numbers"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "qi",
+      "simplified": "七",
+      "pinyin": "qī",
+      "english": "Seven",
+      "category": "numbers",
+      "imageAsset": "qi",
+      "audioAsset": "qi",
+      "tags": [
+        "numbers"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "ba",
+      "simplified": "八",
+      "pinyin": "bā",
+      "english": "Eight",
+      "category": "numbers",
+      "imageAsset": "ba",
+      "audioAsset": "ba",
+      "tags": [
+        "numbers"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "jiu",
+      "simplified": "九",
+      "pinyin": "jiǔ",
+      "english": "Nine",
+      "category": "numbers",
+      "imageAsset": "jiu",
+      "audioAsset": "jiu",
+      "tags": [
+        "numbers"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "shi",
+      "simplified": "十",
+      "pinyin": "shí",
+      "english": "Ten",
+      "category": "numbers",
+      "imageAsset": "shi",
+      "audioAsset": "shi",
+      "tags": [
+        "numbers"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "ling",
+      "simplified": "零",
+      "pinyin": "líng",
+      "english": "Zero",
+      "category": "numbers",
+      "imageAsset": "ling",
+      "audioAsset": "ling",
+      "tags": [
+        "numbers"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "yi-bai",
+      "simplified": "一百",
+      "pinyin": "yībǎi",
+      "english": "One hundred",
+      "category": "numbers",
+      "imageAsset": "yi-bai",
+      "audioAsset": "yi-bai",
+      "tags": [
+        "numbers"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "ma-ma",
+      "simplified": "妈妈",
+      "pinyin": "māma",
+      "english": "Mom",
+      "category": "family",
+      "imageAsset": "ma-ma",
+      "audioAsset": "ma-ma",
+      "tags": [
+        "family"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "ba-ba",
+      "simplified": "爸爸",
+      "pinyin": "bàba",
+      "english": "Dad",
+      "category": "family",
+      "imageAsset": "ba-ba",
+      "audioAsset": "ba-ba",
+      "tags": [
+        "family"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "wai-po",
+      "simplified": "外婆",
+      "pinyin": "wàipó",
+      "english": "Grandma (maternal)",
+      "category": "family",
+      "imageAsset": "wai-po",
+      "audioAsset": "wai-po",
+      "tags": [
+        "family"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "wai-gong",
+      "simplified": "外公",
+      "pinyin": "wàigōng",
+      "english": "Grandpa (maternal)",
+      "category": "family",
+      "imageAsset": "wai-gong",
+      "audioAsset": "wai-gong",
+      "tags": [
+        "family"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "nai-nai",
+      "simplified": "奶奶",
+      "pinyin": "nǎinai",
+      "english": "Grandma (paternal)",
+      "category": "family",
+      "imageAsset": "nai-nai",
+      "audioAsset": "nai-nai",
+      "tags": [
+        "family"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "ye-ye",
+      "simplified": "爷爷",
+      "pinyin": "yéye",
+      "english": "Grandpa (paternal)",
+      "category": "family",
+      "imageAsset": "ye-ye",
+      "audioAsset": "ye-ye",
+      "tags": [
+        "family"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "jie-jie",
+      "simplified": "姐姐",
+      "pinyin": "jiějie",
+      "english": "Older sister",
+      "category": "family",
+      "imageAsset": "jie-jie",
+      "audioAsset": "jie-jie",
+      "tags": [
+        "family"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "mei-mei",
+      "simplified": "妹妹",
+      "pinyin": "mèimei",
+      "english": "Younger sister",
+      "category": "family",
+      "imageAsset": "mei-mei",
+      "audioAsset": "mei-mei",
+      "tags": [
+        "family"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "ge-ge",
+      "simplified": "哥哥",
+      "pinyin": "gēge",
+      "english": "Older brother",
+      "category": "family",
+      "imageAsset": "ge-ge",
+      "audioAsset": "ge-ge",
+      "tags": [
+        "family"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "di-di",
+      "simplified": "弟弟",
+      "pinyin": "dìdi",
+      "english": "Younger brother",
+      "category": "family",
+      "imageAsset": "di-di",
+      "audioAsset": "di-di",
+      "tags": [
+        "family"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "bao-bao",
+      "simplified": "宝宝",
+      "pinyin": "bǎobao",
+      "english": "Baby",
+      "category": "family",
+      "imageAsset": "bao-bao",
+      "audioAsset": "bao-bao",
+      "tags": [
+        "family"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "peng-you",
+      "simplified": "朋友",
+      "pinyin": "péngyǒu",
+      "english": "Friend",
+      "category": "family",
+      "imageAsset": "peng-you",
+      "audioAsset": "peng-you",
+      "tags": [
+        "family"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "tou",
+      "simplified": "头",
+      "pinyin": "tóu",
+      "english": "Head",
+      "category": "body",
+      "imageAsset": "tou",
+      "audioAsset": "tou",
+      "tags": [
+        "body"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "yan-jing",
+      "simplified": "眼睛",
+      "pinyin": "yǎnjing",
+      "english": "Eyes",
+      "category": "body",
+      "imageAsset": "yan-jing",
+      "audioAsset": "yan-jing",
+      "tags": [
+        "body"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "er-duo",
+      "simplified": "耳朵",
+      "pinyin": "ěrduo",
+      "english": "Ears",
+      "category": "body",
+      "imageAsset": "er-duo",
+      "audioAsset": "er-duo",
+      "tags": [
+        "body"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "bi-zi",
+      "simplified": "鼻子",
+      "pinyin": "bízi",
+      "english": "Nose",
+      "category": "body",
+      "imageAsset": "bi-zi",
+      "audioAsset": "bi-zi",
+      "tags": [
+        "body"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "zui-ba",
+      "simplified": "嘴巴",
+      "pinyin": "zuǐba",
+      "english": "Mouth",
+      "category": "body",
+      "imageAsset": "zui-ba",
+      "audioAsset": "zui-ba",
+      "tags": [
+        "body"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "shou",
+      "simplified": "手",
+      "pinyin": "shǒu",
+      "english": "Hand",
+      "category": "body",
+      "imageAsset": "shou",
+      "audioAsset": "shou",
+      "tags": [
+        "body"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "jiao",
+      "simplified": "脚",
+      "pinyin": "jiǎo",
+      "english": "Foot",
+      "category": "body",
+      "imageAsset": "jiao",
+      "audioAsset": "jiao",
+      "tags": [
+        "body"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "shou-bi",
+      "simplified": "手臂",
+      "pinyin": "shǒubì",
+      "english": "Arm",
+      "category": "body",
+      "imageAsset": "shou-bi",
+      "audioAsset": "shou-bi",
+      "tags": [
+        "body"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "tui",
+      "simplified": "腿",
+      "pinyin": "tuǐ",
+      "english": "Leg",
+      "category": "body",
+      "imageAsset": "tui",
+      "audioAsset": "tui",
+      "tags": [
+        "body"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "du-zi",
+      "simplified": "肚子",
+      "pinyin": "dùzi",
+      "english": "Belly",
+      "category": "body",
+      "imageAsset": "du-zi",
+      "audioAsset": "du-zi",
+      "tags": [
+        "body"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "tou-fa",
+      "simplified": "头发",
+      "pinyin": "tóufa",
+      "english": "Hair",
+      "category": "body",
+      "imageAsset": "tou-fa",
+      "audioAsset": "tou-fa",
+      "tags": [
+        "body"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "ya-chi",
+      "simplified": "牙齿",
+      "pinyin": "yáchǐ",
+      "english": "Teeth",
+      "category": "body",
+      "imageAsset": "ya-chi",
+      "audioAsset": "ya-chi",
+      "tags": [
+        "body"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "ni-hao",
+      "simplified": "你好",
+      "pinyin": "nǐ hǎo",
+      "english": "Hello",
+      "category": "greetings",
+      "imageAsset": "ni-hao",
+      "audioAsset": "ni-hao",
+      "tags": [
+        "greetings"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "zai-jian",
+      "simplified": "再见",
+      "pinyin": "zàijiàn",
+      "english": "Goodbye",
+      "category": "greetings",
+      "imageAsset": "zai-jian",
+      "audioAsset": "zai-jian",
+      "tags": [
+        "greetings"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "xie-xie",
+      "simplified": "谢谢",
+      "pinyin": "xièxie",
+      "english": "Thank you",
+      "category": "greetings",
+      "imageAsset": "xie-xie",
+      "audioAsset": "xie-xie",
+      "tags": [
+        "greetings"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "bu-ke-qi",
+      "simplified": "不客气",
+      "pinyin": "bù kèqi",
+      "english": "You're welcome",
+      "category": "greetings",
+      "imageAsset": "bu-ke-qi",
+      "audioAsset": "bu-ke-qi",
+      "tags": [
+        "greetings"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "dui-bu-qi",
+      "simplified": "对不起",
+      "pinyin": "duìbuqǐ",
+      "english": "Sorry",
+      "category": "greetings",
+      "imageAsset": "dui-bu-qi",
+      "audioAsset": "dui-bu-qi",
+      "tags": [
+        "greetings"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "shi-yes",
+      "simplified": "是",
+      "pinyin": "shì",
+      "english": "Yes",
+      "category": "greetings",
+      "imageAsset": "shi-yes",
+      "audioAsset": "shi-yes",
+      "tags": [
+        "greetings"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "bu",
+      "simplified": "不",
+      "pinyin": "bù",
+      "english": "No",
+      "category": "greetings",
+      "imageAsset": "bu",
+      "audioAsset": "bu",
+      "tags": [
+        "greetings"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "zao-shang-hao",
+      "simplified": "早上好",
+      "pinyin": "zǎoshang hǎo",
+      "english": "Good morning",
+      "category": "greetings",
+      "imageAsset": "zao-shang-hao",
+      "audioAsset": "zao-shang-hao",
+      "tags": [
+        "greetings"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "wan-an",
+      "simplified": "晚安",
+      "pinyin": "wǎn'ān",
+      "english": "Good night",
+      "category": "greetings",
+      "imageAsset": "wan-an",
+      "audioAsset": "wan-an",
+      "tags": [
+        "greetings"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "wo-ai-ni",
+      "simplified": "我爱你",
+      "pinyin": "wǒ ài nǐ",
+      "english": "I love you",
+      "category": "greetings",
+      "imageAsset": "wo-ai-ni",
+      "audioAsset": "wo-ai-ni",
+      "tags": [
+        "greetings"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "yi-zi",
+      "simplified": "椅子",
+      "pinyin": "yǐzi",
+      "english": "Chair",
+      "category": "household",
+      "imageAsset": "yi-zi",
+      "audioAsset": "yi-zi",
+      "tags": [
+        "household"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "zhuo-zi",
+      "simplified": "桌子",
+      "pinyin": "zhuōzi",
+      "english": "Table",
+      "category": "household",
+      "imageAsset": "zhuo-zi",
+      "audioAsset": "zhuo-zi",
+      "tags": [
+        "household"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "chuang",
+      "simplified": "床",
+      "pinyin": "chuáng",
+      "english": "Bed",
+      "category": "household",
+      "imageAsset": "chuang",
+      "audioAsset": "chuang",
+      "tags": [
+        "household"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "men",
+      "simplified": "门",
+      "pinyin": "mén",
+      "english": "Door",
+      "category": "household",
+      "imageAsset": "men",
+      "audioAsset": "men",
+      "tags": [
+        "household"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "chuang-hu",
+      "simplified": "窗户",
+      "pinyin": "chuānghu",
+      "english": "Window",
+      "category": "household",
+      "imageAsset": "chuang-hu",
+      "audioAsset": "chuang-hu",
+      "tags": [
+        "household"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "shu",
+      "simplified": "书",
+      "pinyin": "shū",
+      "english": "Book",
+      "category": "household",
+      "imageAsset": "shu",
+      "audioAsset": "shu",
+      "tags": [
+        "household"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "bao",
+      "simplified": "包",
+      "pinyin": "bāo",
+      "english": "Bag",
+      "category": "household",
+      "imageAsset": "bao",
+      "audioAsset": "bao",
+      "tags": [
+        "household"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "bei-zi",
+      "simplified": "杯子",
+      "pinyin": "bēizi",
+      "english": "Cup",
+      "category": "household",
+      "imageAsset": "bei-zi",
+      "audioAsset": "bei-zi",
+      "tags": [
+        "household"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "wan",
+      "simplified": "碗",
+      "pinyin": "wǎn",
+      "english": "Bowl",
+      "category": "household",
+      "imageAsset": "wan",
+      "audioAsset": "wan",
+      "tags": [
+        "household"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "shao-zi",
+      "simplified": "勺子",
+      "pinyin": "sháozi",
+      "english": "Spoon",
+      "category": "household",
+      "imageAsset": "shao-zi",
+      "audioAsset": "shao-zi",
+      "tags": [
+        "household"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "wan-ju",
+      "simplified": "玩具",
+      "pinyin": "wánjù",
+      "english": "Toy",
+      "category": "household",
+      "imageAsset": "wan-ju",
+      "audioAsset": "wan-ju",
+      "tags": [
+        "household"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "qiu",
+      "simplified": "球",
+      "pinyin": "qiú",
+      "english": "Ball",
+      "category": "household",
+      "imageAsset": "qiu",
+      "audioAsset": "qiu",
+      "tags": [
+        "household"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "chen-shan",
+      "simplified": "衬衫",
+      "pinyin": "chènshān",
+      "english": "Shirt",
+      "category": "clothes",
+      "imageAsset": "chen-shan",
+      "audioAsset": "chen-shan",
+      "tags": [
+        "clothes"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "ku-zi",
+      "simplified": "裤子",
+      "pinyin": "kùzi",
+      "english": "Pants",
+      "category": "clothes",
+      "imageAsset": "ku-zi",
+      "audioAsset": "ku-zi",
+      "tags": [
+        "clothes"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "qun-zi",
+      "simplified": "裙子",
+      "pinyin": "qúnzi",
+      "english": "Dress",
+      "category": "clothes",
+      "imageAsset": "qun-zi",
+      "audioAsset": "qun-zi",
+      "tags": [
+        "clothes"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "xie-zi",
+      "simplified": "鞋子",
+      "pinyin": "xiézi",
+      "english": "Shoes",
+      "category": "clothes",
+      "imageAsset": "xie-zi",
+      "audioAsset": "xie-zi",
+      "tags": [
+        "clothes"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "wa-zi",
+      "simplified": "袜子",
+      "pinyin": "wàzi",
+      "english": "Socks",
+      "category": "clothes",
+      "imageAsset": "wa-zi",
+      "audioAsset": "wa-zi",
+      "tags": [
+        "clothes"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "mao-zi",
+      "simplified": "帽子",
+      "pinyin": "màozi",
+      "english": "Hat",
+      "category": "clothes",
+      "imageAsset": "mao-zi",
+      "audioAsset": "mao-zi",
+      "tags": [
+        "clothes"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "wai-tao",
+      "simplified": "外套",
+      "pinyin": "wàitào",
+      "english": "Coat",
+      "category": "clothes",
+      "imageAsset": "wai-tao",
+      "audioAsset": "wai-tao",
+      "tags": [
+        "clothes"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "shou-tao",
+      "simplified": "手套",
+      "pinyin": "shǒutào",
+      "english": "Gloves",
+      "category": "clothes",
+      "imageAsset": "shou-tao",
+      "audioAsset": "shou-tao",
+      "tags": [
+        "clothes"
+      ],
+      "frequencyTier": 4
+    },
+    {
+      "id": "tai-yang",
+      "simplified": "太阳",
+      "pinyin": "tàiyáng",
+      "english": "Sun",
+      "category": "nature",
+      "imageAsset": "tai-yang",
+      "audioAsset": "tai-yang",
+      "tags": [
+        "nature"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "yue-liang",
+      "simplified": "月亮",
+      "pinyin": "yuèliang",
+      "english": "Moon",
+      "category": "nature",
+      "imageAsset": "yue-liang",
+      "audioAsset": "yue-liang",
+      "tags": [
+        "nature"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "xing-xing",
+      "simplified": "星星",
+      "pinyin": "xīngxing",
+      "english": "Star",
+      "category": "nature",
+      "imageAsset": "xing-xing",
+      "audioAsset": "xing-xing",
+      "tags": [
+        "nature"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "yun",
+      "simplified": "云",
+      "pinyin": "yún",
+      "english": "Cloud",
+      "category": "nature",
+      "imageAsset": "yun",
+      "audioAsset": "yun",
+      "tags": [
+        "nature"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "yu-rain",
+      "simplified": "雨",
+      "pinyin": "yǔ",
+      "english": "Rain",
+      "category": "nature",
+      "imageAsset": "yu-rain",
+      "audioAsset": "yu-rain",
+      "tags": [
+        "nature"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "xue",
+      "simplified": "雪",
+      "pinyin": "xuě",
+      "english": "Snow",
+      "category": "nature",
+      "imageAsset": "xue",
+      "audioAsset": "xue",
+      "tags": [
+        "nature"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "feng",
+      "simplified": "风",
+      "pinyin": "fēng",
+      "english": "Wind",
+      "category": "nature",
+      "imageAsset": "feng",
+      "audioAsset": "feng",
+      "tags": [
+        "nature"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "hua",
+      "simplified": "花",
+      "pinyin": "huā",
+      "english": "Flower",
+      "category": "nature",
+      "imageAsset": "hua",
+      "audioAsset": "hua",
+      "tags": [
+        "nature"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "shu-tree",
+      "simplified": "树",
+      "pinyin": "shù",
+      "english": "Tree",
+      "category": "nature",
+      "imageAsset": "shu-tree",
+      "audioAsset": "shu-tree",
+      "tags": [
+        "nature"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "cao",
+      "simplified": "草",
+      "pinyin": "cǎo",
+      "english": "Grass",
+      "category": "nature",
+      "imageAsset": "cao",
+      "audioAsset": "cao",
+      "tags": [
+        "nature"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "shan",
+      "simplified": "山",
+      "pinyin": "shān",
+      "english": "Mountain",
+      "category": "nature",
+      "imageAsset": "shan",
+      "audioAsset": "shan",
+      "tags": [
+        "nature"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "he",
+      "simplified": "河",
+      "pinyin": "hé",
+      "english": "River",
+      "category": "nature",
+      "imageAsset": "he",
+      "audioAsset": "he",
+      "tags": [
+        "nature"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "hai",
+      "simplified": "海",
+      "pinyin": "hǎi",
+      "english": "Sea",
+      "category": "nature",
+      "imageAsset": "hai",
+      "audioAsset": "hai",
+      "tags": [
+        "nature"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "chi",
+      "simplified": "吃",
+      "pinyin": "chī",
+      "english": "Eat",
+      "category": "actions",
+      "imageAsset": "chi",
+      "audioAsset": "chi",
+      "tags": [
+        "actions"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "he-drink",
+      "simplified": "喝",
+      "pinyin": "hē",
+      "english": "Drink",
+      "category": "actions",
+      "imageAsset": "he-drink",
+      "audioAsset": "he-drink",
+      "tags": [
+        "actions"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "shui-jiao",
+      "simplified": "睡觉",
+      "pinyin": "shuìjiào",
+      "english": "Sleep",
+      "category": "actions",
+      "imageAsset": "shui-jiao",
+      "audioAsset": "shui-jiao",
+      "tags": [
+        "actions"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "wan-play",
+      "simplified": "玩",
+      "pinyin": "wán",
+      "english": "Play",
+      "category": "actions",
+      "imageAsset": "wan-play",
+      "audioAsset": "wan-play",
+      "tags": [
+        "actions"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "pao",
+      "simplified": "跑",
+      "pinyin": "pǎo",
+      "english": "Run",
+      "category": "actions",
+      "imageAsset": "pao",
+      "audioAsset": "pao",
+      "tags": [
+        "actions"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "tiao",
+      "simplified": "跳",
+      "pinyin": "tiào",
+      "english": "Jump",
+      "category": "actions",
+      "imageAsset": "tiao",
+      "audioAsset": "tiao",
+      "tags": [
+        "actions"
+      ],
+      "frequencyTier": 3
+    },
+    {
+      "id": "zuo",
+      "simplified": "坐",
+      "pinyin": "zuò",
+      "english": "Sit",
+      "category": "actions",
+      "imageAsset": "zuo",
+      "audioAsset": "zuo",
+      "tags": [
+        "actions"
+      ],
+      "frequencyTier": 1
+    },
+    {
+      "id": "zhan",
+      "simplified": "站",
+      "pinyin": "zhàn",
+      "english": "Stand",
+      "category": "actions",
+      "imageAsset": "zhan",
+      "audioAsset": "zhan",
+      "tags": [
+        "actions"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "du",
+      "simplified": "读",
+      "pinyin": "dú",
+      "english": "Read",
+      "category": "actions",
+      "imageAsset": "du",
+      "audioAsset": "du",
+      "tags": [
+        "actions"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "hua-hua",
+      "simplified": "画画",
+      "pinyin": "huàhuà",
+      "english": "Draw",
+      "category": "actions",
+      "imageAsset": "hua-hua",
+      "audioAsset": "hua-hua",
+      "tags": [
+        "actions"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "chang-ge",
+      "simplified": "唱歌",
+      "pinyin": "chànggē",
+      "english": "Sing",
+      "category": "actions",
+      "imageAsset": "chang-ge",
+      "audioAsset": "chang-ge",
+      "tags": [
+        "actions"
+      ],
+      "frequencyTier": 2
+    },
+    {
+      "id": "tiao-wu",
+      "simplified": "跳舞",
+      "pinyin": "tiàowǔ",
+      "english": "Dance",
+      "category": "actions",
+      "imageAsset": "tiao-wu",
+      "audioAsset": "tiao-wu",
+      "tags": [
+        "actions"
+      ],
+      "frequencyTier": 2
+    }
+  ]
+}

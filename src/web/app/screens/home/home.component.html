@@ -1,0 +1,53 @@
+<main class="relative flex min-h-dvh flex-col overflow-y-auto items-center gap-8 bg-amber-50 px-6 py-16">
+  <button
+    type="button"
+    class="absolute right-1 top-1 flex size-11 items-center justify-center rounded-full text-2xl opacity-30 hover:opacity-60 focus-visible:opacity-80"
+    aria-label="Settings"
+    data-testid="settings"
+    (click)="openSettings()"
+  >
+    ⚙
+  </button>
+
+  <button
+    type="button"
+    class="mt-8 min-h-48 w-full max-w-md rounded-3xl bg-emerald-500 px-8 py-12 text-4xl font-bold text-white shadow-lg active:scale-95"
+    data-testid="start-now"
+    (click)="startNow()"
+  >
+    Start Now
+  </button>
+
+  <nav class="flex w-full max-w-md flex-col gap-3" aria-label="Activities">
+    @for (c of categories; track c.id) {
+      <a
+        [routerLink]="['/session/flashcard', c.id]"
+        class="flex min-h-11 items-center gap-3 rounded-2xl bg-white px-5 py-3 text-lg text-slate-700 shadow-sm"
+        data-testid="category"
+      >
+        <span aria-hidden="true">{{ c.emoji }}</span>
+        <span>{{ c.name }}</span>
+      </a>
+    }
+    @if (showListen()) {
+      <a
+        routerLink="/session/listen"
+        class="flex min-h-11 items-center rounded-2xl bg-white px-5 py-3 text-lg text-slate-700 shadow-sm"
+        data-testid="listen"
+      >
+        Listen &amp; Tap
+      </a>
+    }
+    <a
+      routerLink="/my-words"
+      class="flex min-h-11 items-center rounded-2xl bg-white px-5 py-3 text-lg text-slate-700 shadow-sm"
+      data-testid="my-words"
+    >
+      My Words
+    </a>
+  </nav>
+</main>
+
+@if (settingsOpen()) {
+  <app-settings-panel (closed)="settingsOpen.set(false)" />
+}

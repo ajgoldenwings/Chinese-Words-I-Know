@@ -1,0 +1,71 @@
+{
+  "contentVersion": 4,
+  "categories": [
+    {
+      "id": "animals",
+      "name": "Animals",
+      "emoji": "🐾",
+      "coverImage": "animals"
+    },
+    {
+      "id": "food",
+      "name": "Food & Drink",
+      "emoji": "🍎",
+      "coverImage": "food"
+    },
+    {
+      "id": "colors",
+      "name": "Colors",
+      "emoji": "🎨",
+      "coverImage": "colors"
+    },
+    {
+      "id": "numbers",
+      "name": "Numbers",
+      "emoji": "🔢",
+      "coverImage": "numbers"
+    },
+    {
+      "id": "family",
+      "name": "Family",
+      "emoji": "👨‍👩‍👧",
+      "coverImage": "family"
+    },
+    {
+      "id": "body",
+      "name": "Body",
+      "emoji": "🖐️",
+      "coverImage": "body"
+    },
+    {
+      "id": "greetings",
+      "name": "Greetings & Phrases",
+      "emoji": "👋",
+      "coverImage": "greetings"
+    },
+    {
+      "id": "household",
+      "name": "Household Objects",
+      "emoji": "🏠",
+      "coverImage": "household"
+    },
+    {
+      "id": "clothes",
+      "name": "Clothes",
+      "emoji": "👕",
+      "coverImage": "clothes"
+    },
+    {
+      "id": "nature",
+      "name": "Nature & Weather",
+      "emoji": "🌤️",
+      "coverImage": "nature"
+    },
+    {
+      "id": "actions",
+      "name": "Actions & Verbs",
+      "emoji": "🏃",
+      "coverImage": "actions"
+    }
+  ]
+}

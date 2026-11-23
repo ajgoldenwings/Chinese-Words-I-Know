@@ -1,0 +1,34 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app-shell",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.csr.html",
+          "/index.html",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "media",
+      "urls": [
+        "assets/audio/**",
+        "assets/images/**"
+      ],
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 2000,
+        "maxAge": "90d"
+      }
+    }
+  ]
+}

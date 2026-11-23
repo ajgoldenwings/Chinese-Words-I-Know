@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Run tests after each task",
+      "trigger": "PostTaskExec",
+      "description": "Runs the Angular test suite (Vitest) after a spec task completes. Skips quietly until the Angular project exists.",
+      "action": {
+        "type": "command",
+        "command": "sh -c 'if [ -f angular.json ]; then npx ng test --watch=false; else echo \"No Angular project yet; skipping tests.\"; fi'",
+        "timeout": 300
+      }
+    }
+  ]
+}
