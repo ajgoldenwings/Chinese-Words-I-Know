@@ -1,68 +1,64 @@
 name: Deploy
-
 on:
   push:
     branches: [main]
-
+  # Lets a failed deploy be re-run from the Actions tab without a new commit.
+  workflow_dispatch:
 permissions:
   contents: read
   pages: write
   id-token: write
-
 concurrency:
   group: deploy
   cancel-in-progress: false
-
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+    # Kept on the github-pages environment so the OIDC token subject
+    # (repo:<owner>/<repo>:environment:github-pages) matches the AWS role's trust policy.
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-
       - name: Install dependencies
         run: npm ci
-
       - name: Install infra dependencies
         run: npm ci
         working-directory: infra
-
       - name: Test
         run: npx ng test --no-watch
-
       - name: Test infra
         run: npm test
         working-directory: infra
-
       - name: Authenticate to AWS (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
-
       - name: Deploy infrastructure
         run: npx cdk deploy --all --require-approval never --outputs-file ../cdk-outputs.json -c githubUser=${{ github.repository_owner }}
         working-directory: infra
-
       - name: Generate app configuration
         run: node scripts/write-environment.mjs cdk-outputs.json "${{ vars.AWS_REGION }}"
-
       - name: Build
         run: npx ng build --configuration production,cloud --base-href "/${{ github.event.repository.name }}/"
-
       - uses: actions/configure-pages@v5
-
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist/chinese-words-i-know/browser
-
+  # A separate job, as in GitHub's Pages workflow template. It starts only after the build job
+  # has finished, so the uploaded "github-pages" artifact is registered before it is looked up.
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

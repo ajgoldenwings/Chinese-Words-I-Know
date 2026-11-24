@@ -4,7 +4,13 @@
 
 ## Strategy
 
-A single pipeline runs on every push to `main`. It is defined in `.github/workflows/deploy.yml` and runs on GitHub Actions.
+A single pipeline runs on every push to `main`. It is defined in `.github/workflows/deploy.yml` and runs on GitHub Actions. It can also be started by hand (`workflow_dispatch`) to re-run a deploy without a new commit.
+
+The workflow has two jobs, following GitHub's Pages workflow template:
+- **`build`** runs steps 1 to 6 below and uploads the site with `actions/upload-pages-artifact`
+- **`deploy`** (`needs: build`) runs step 7 with `actions/deploy-pages`. Deploying from a separate job means the `github-pages` artifact is fully registered before it is looked up. Deploying in the same job, one second after the upload, can fail with "No artifacts named github-pages were found"
+
+Both jobs run in the `github-pages` environment. For the build job this keeps the OIDC token subject as `repo:<owner>/<repo>:environment:github-pages`, which the AWS role's trust policy matches. Moving the AWS steps out of that environment changes the subject to `repo:<owner>/<repo>:ref:refs/heads/main` and needs a trust policy change first.
 
 This is a single-environment pipeline. Multi-environment support (dev/staging/prod) is a future feature.
 
@@ -45,7 +51,8 @@ push to main
      │
      ▼
 7. Deploy web app to GitHub Pages
-   └── actions/upload-pages-artifact, then actions/deploy-pages
+   ├── actions/upload-pages-artifact   (end of the build job)
+   └── actions/deploy-pages            (deploy job)
 ```
 
 Before Task 16, steps 3 to 5 do not exist and the generated environment file has empty cloud values, so sync stays disabled.
@@ -57,12 +64,13 @@ The CDK deploy runs before the Angular build because the app needs the API URL a
 - If tests fail (step 2), nothing is deployed
 - If the CDK deploy fails (step 4), the app is not built or deployed
 - If the Angular build fails (step 6), the web deploy does not run
+- If only the deploy job fails, re-run it from the Actions tab (Re-run failed jobs). The artifact from the build job is reused, so tests and the CDK deploy do not run again
 - Each step's output is visible in the GitHub Actions log
 - The workflow uses a `concurrency` group so two deploys never run at once
 
 ## One-time prerequisites
 
-1. In the repository settings, set **Pages → Source** to **GitHub Actions**
+1. In the repository settings, set **Pages → Source** to **GitHub Actions**. If it is left on **Deploy from a branch**, GitHub also runs its own "pages build and deployment" workflow on every push. That workflow publishes the repository with Jekyll (the README) to the same site, so whichever deploy finishes last is live
 2. Run `cdk bootstrap aws://<account>/<region>` once
 3. Create the GitHub OIDC identity provider in the AWS account and an IAM role for the workflow (below)
 4. Add repository variables `AWS_ROLE_ARN` and `AWS_REGION` (neither is a secret)
