@@ -129,8 +129,7 @@ describe('cached and uncached words offline (flashcard)', () => {
     const { harness, el, played } = await open(false);
     (el.querySelector('main > button') as HTMLElement).click();
     harness.detectChanges();
-    // Once when the emoji is shown, once on the press. AudioService resolves silently if the file is missing.
-    expect(played.map((p) => p.speed)).toEqual(['natural', 'natural']);
+    expect(played.map((p) => p.speed)).toEqual(['natural']); // AudioService resolves silently if the file is missing
     expect(el.querySelector('.got-it')).not.toBeNull();
   });
 });

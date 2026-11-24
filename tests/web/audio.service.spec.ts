@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
 import { AppStore, APP_STORAGE, MemoryStorage } from '@shared/store';
 import { environment } from '../../src/web/environments/environment';
-import { AUDIO_ELEMENT_FACTORY, AudioService, LEAD_IN_SKIP_S, SILENT_WAV } from '../../src/web/app/services/audio.service';
+import { AUDIO_ELEMENT_FACTORY, AudioService, SILENT_WAV } from '../../src/web/app/services/audio.service';
 
 function setup(play: () => Promise<void> = () => Promise.resolve()) {
   const sources: string[] = [];
@@ -155,15 +155,14 @@ describe('AudioService', () => {
     expect(el().srcSets).toBe(1);
     expect(el().currentTime).toBe(0);
   });
-  it('skipLeadIn starts after the lead-in silence, on a new or a repeated recording', async () => {
+  it('always plays from the very start, so the lead-in silence is never skipped', async () => {
     const { service, el } = loadedElement();
-    await service.play('mao', 'natural', { skipLeadIn: true });
-    expect(el().src).toBe(`assets/audio/words/mao/mao-natural.mp3#t=${LEAD_IN_SKIP_S}`);
-    await service.play('mao', 'natural', { skipLeadIn: true });
-    expect(el().srcSets).toBe(1);
-    expect(el().currentTime).toBe(LEAD_IN_SKIP_S);
+    await service.play('mao', 'natural');
+    expect(el().src).toBe('assets/audio/words/mao/mao-natural.mp3');
+    el().currentTime = 0.8; // part way through
     await service.play('mao', 'natural');
     expect(el().currentTime).toBe(0);
+    expect(el().srcSets).toBe(1);
   });
   it('a different recording loads its own file', async () => {
     const { service, el } = loadedElement();
@@ -171,8 +170,5 @@ describe('AudioService', () => {
     await service.play('gou', 'natural');
     expect(el().src).toBe('assets/audio/words/gou/gou-natural.mp3');
     expect(el().srcSets).toBe(2);
-  });
-  it('the lead-in skip is shorter than the 0.3 s padding', () => {
-    expect(LEAD_IN_SKIP_S).toBeLessThan(0.3);
   });
 });

@@ -166,13 +166,12 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
     - Only a small faint back button is shown; its tap target is still at least 44×44pt
     - Nothing times out or advances on its own
     - _Requirements: 2, 7, 9_
-  - [x] 9.4 Play audio when the image is displayed and on every press
-    - The natural recording plays once when the card's image loads, fails to the emoji, or has no image, and after 1.5 seconds at most if the image is slow
-    - Every press of the card plays the word, not only the first; the first press also reveals ✓ and ✗
-    - A press plays with no delay: no wait for the image, no reload of the same recording, and the lead-in silence skipped
-    - A press before the image loads replaces the load sound. Answering stops the sound, and the next card plays when its image loads
-    - `AudioService` is created at app start, reuses one audio element, and unlocks it with a short silence on the first tap, so the sound that plays when the image loads (outside a tap) still plays on iOS Safari (see [Web](platforms/web.md#audio-playback))
-    - See [Progressive Disclosure](ux/progressive-disclosure.md) and [Audio](content/audio.md)
+  - [x] 9.4 Play audio on every press, never on its own
+    - The natural recording plays only when the card is pressed. Nothing plays when a card appears, including the next card after an answer
+    - Every press plays the word from the start, not only the first; the first press also reveals ✓ and ✗
+    - A repeat press rewinds the loaded recording instead of reloading it, so it plays without a delay
+    - The 0.3 s lead-in silence is never skipped, so the start of the word is not clipped (see [Audio](content/audio.md#format-and-quality))
+    - See [Progressive Disclosure](ux/progressive-disclosure.md) and [Web](platforms/web.md#audio-playback)
     - _Requirements: 2, 7_
   - [x] 9.2 Implement session logic
     - Each answer calls the confidence engine, updates the store, and advances to the next word
@@ -185,9 +184,9 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
     - The session advances without any extra tap
     - The back button returns to the home screen
     - Pinyin appears automatically for a word with no audio when both text settings are off
-    - The word plays once when the image loads or fails, after the 1.5 second wait at most, on every press, and for the next card when its image loads
+    - Nothing plays when a card appears or its image loads; every press plays the word from the start; the next card is silent until pressed
     - `AudioService` reuses one element and plays the unlock silence once
-    - Replaying the same recording rewinds instead of reloading, and `skipLeadIn` starts at 0.25 s
+    - Replaying the same recording rewinds to 0 instead of reloading
     - _Requirements: 2, 3, 5_
 
 - [x] 10. Listen and tap mode

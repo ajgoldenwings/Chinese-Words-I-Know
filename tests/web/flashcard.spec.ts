@@ -7,7 +7,7 @@ import { loadContent } from '@shared/content';
 import { buildWordLists } from '@shared/lists';
 import { APP_STORAGE, AppStore, MemoryStorage, createDefaultWordState } from '@shared/store';
 import { AudioService } from '../../src/web/app/services/audio.service';
-import { CARD_AUDIO_MAX_WAIT_MS, FlashcardComponent } from '../../src/web/app/screens/flashcard/flashcard.component';
+import { FlashcardComponent } from '../../src/web/app/screens/flashcard/flashcard.component';
 
 @Component({ template: 'home' })
 class HomeStub {}
@@ -114,68 +114,46 @@ describe('FlashcardComponent audio', () => {
     await harness.navigateByUrl('/session/flashcard/animals');
     harness.detectChanges();
     const el = harness.routeNativeElement as HTMLElement;
-    const card = () => el.querySelector('main > button') as HTMLElement;
     const press = () => {
-      card().click();
+      (el.querySelector('main > button') as HTMLElement).click();
       harness.detectChanges();
     };
     const fire = (type: 'load' | 'error') => {
-      el.querySelector('img')!.dispatchEvent(new Event(type));
+      el.querySelector('img')?.dispatchEvent(new Event(type));
       harness.detectChanges();
     };
     return { harness, el, play, press, fire };
   }
-  it('plays the word once when the card image loads', async () => {
-    const { play, fire } = await audioSetup();
-    expect(play).not.toHaveBeenCalled();
-    fire('load');
-    expect(play).toHaveBeenCalledWith(words[0].audioAsset, 'natural');
-    fire('load');
-    expect(play).toHaveBeenCalledTimes(1);
-  });
-  it('plays when the image fails and the emoji shows instead', async () => {
-    const { play, fire } = await audioSetup();
-    fire('error');
-    expect(play).toHaveBeenCalledTimes(1);
-  });
-  it('plays on every press of the card, not only the first', async () => {
-    const { el, play, press, fire } = await audioSetup();
-    fire('load');
-    press();
-    press();
-    press();
-    expect(play).toHaveBeenCalledTimes(4);
-    // Presses play at once, skipping the lead-in silence. The load sound keeps it.
-    expect(play.mock.calls[0]).toEqual([words[0].audioAsset, 'natural']);
-    expect(play).toHaveBeenLastCalledWith(words[0].audioAsset, 'natural', { skipLeadIn: true });
-    expect(el.querySelector('.got-it')).not.toBeNull();
-  });
-  it('a press before the image loads replaces the load sound', async () => {
-    const { play, press, fire } = await audioSetup();
-    press();
-    fire('load');
-    expect(play).toHaveBeenCalledTimes(1);
-  });
-  it('plays anyway after a short wait if the image is slow', async () => {
+  it('plays nothing when a card appears, even after its image loads or fails', async () => {
     vi.useFakeTimers();
     try {
-      const { play } = await audioSetup();
+      const { play, fire } = await audioSetup();
+      fire('load');
+      fire('error');
+      await vi.advanceTimersByTimeAsync(5000);
       expect(play).not.toHaveBeenCalled();
-      await vi.advanceTimersByTimeAsync(CARD_AUDIO_MAX_WAIT_MS);
-      expect(play).toHaveBeenCalledTimes(1);
     } finally {
       vi.useRealTimers();
     }
   });
-  it('the next card plays when its image loads', async () => {
+  it('plays the word from the start on every press of the card', async () => {
+    const { el, play, press } = await audioSetup();
+    press();
+    press();
+    press();
+    expect(play).toHaveBeenCalledTimes(3);
+    for (const call of play.mock.calls) expect(call).toEqual([words[0].audioAsset, 'natural']);
+    expect(el.querySelector('.got-it')).not.toBeNull();
+  });
+  it('the next card stays silent until it is pressed', async () => {
     const { el, harness, play, press, fire } = await audioSetup();
-    fire('load');
     press();
     (el.querySelector('.got-it') as HTMLElement).click();
     harness.detectChanges();
     play.mockClear();
     fire('load');
-    expect(play).toHaveBeenCalledTimes(1);
+    expect(play).not.toHaveBeenCalled();
+    press();
     expect(play).toHaveBeenCalledWith(words[1].audioAsset, 'natural');
   });
 });

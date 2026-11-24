@@ -4,10 +4,10 @@
 
 ## Overview
 
-All audio is pre-recorded by a native Mandarin speaker. No TTS is used in this version. Audio is enabled by default (`audioEnabled: true`) and can be turned off via the settings toggle. When enabled, every word that has a recording plays automatically when its flashcard image is displayed, again on every press of the card, and in listen + tap mode. Words without a recording stay silent and the UI shows the English word instead. If pinyin and character display are both off, the word's pinyin is shown as a fallback so the learner still sees some Chinese (see [Progressive Disclosure](../ux/progressive-disclosure.md)).
+All audio is pre-recorded by a native Mandarin speaker. No TTS is used in this version. Audio is enabled by default (`audioEnabled: true`) and can be turned off via the settings toggle. When enabled, every word that has a recording plays on every press of a flashcard and automatically in listen + tap mode. Words without a recording stay silent and the UI shows the English word instead. If pinyin and character display are both off, the word's pinyin is shown as a fallback so the learner still sees some Chinese (see [Progressive Disclosure](../ux/progressive-disclosure.md)).
 
 Each word has two recordings:
-- **Natural** — spoken at a normal conversational pace; plays in flashcard mode when the card's image is displayed and after every press of the card
+- **Natural** — spoken at a normal conversational pace; plays in flashcard mode on every press of the card
 - **Slow** — spoken clearly and slowly; plays in listen + tap mode to help young learners isolate the sounds. It plays twice per round: when the pictures appear (the target word), and after every press of a picture (the pressed picture's word). See [Progressive Disclosure](../ux/progressive-disclosure.md)
 
 ## Format and Quality
@@ -17,7 +17,7 @@ Each word has two recordings:
 | Format | MP3 | Universal support across all browsers, iOS, and Android |
 | Sample rate | 44.1 kHz | Standard for speech recordings |
 | Bit rate | 128 kbps mono | High enough quality for clear speech; ~60–80 KB per file |
-| Silence padding | 0.3s before, 0.3s after | Prevents clipping; gives the child a moment before and after the word. When the child presses a flashcard, playback starts 0.25 s in, skipping most of the lead-in so the word sounds at once. Sound that plays by itself (when an image loads) keeps the full padding |
+| Silence padding | 0.3s before, 0.3s after | Prevents clipping; gives the child a moment before and after the word. Playback always starts at `0`. The lead-in is never skipped: browsers seek in an MP3 in steps of about 26 ms, and the audio output can take a moment to start (especially on Bluetooth), so a shorter lead-in clips the start of the word |
 | Approximate total size | ~160 MB | 2000 files × ~80 KB average |
 
 ## File Naming Convention

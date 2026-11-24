@@ -3,15 +3,6 @@ import { AppStore } from '@shared/store';
 import { environment } from '../../environments/environment';
 
 export type AudioSpeed = 'natural' | 'slow';
-export interface PlayOptions {
-  /**
-   * Start just after the 0.3 s of silence every recording begins with (content/audio.md),
-   * so a press sounds at once. Used for presses, not for sound that plays by itself.
-   */
-  skipLeadIn?: boolean;
-}
-/** Seconds skipped with `skipLeadIn`. A little under the 0.3 s padding so no speech is cut. */
-export const LEAD_IN_SKIP_S = 0.25;
 
 /** Creates the element that plays one file. Replaceable in tests. */
 export const AUDIO_ELEMENT_FACTORY = new InjectionToken<(src: string) => HTMLAudioElement>(
@@ -60,7 +51,7 @@ export const SILENT_WAV = (() => {
  * One audio element is reused for every sound. iOS Safari and some other browsers only
  * allow `play()` outside a tap on an element that has already played from a tap. The first
  * tap anywhere in the app plays a short silence on that element, so later sounds (for example
- * the word that plays when a Listen + Tap round's pictures have loaded) are allowed.
+ * the Listen + Tap word that plays when a round starts after a screen change) are allowed.
  */
 @Injectable({ providedIn: 'root' })
 export class AudioService {
@@ -94,21 +85,21 @@ export class AudioService {
       // Unlocking is best effort.
     }
   }
-  async play(slug: string | null | undefined, speed: AudioSpeed, options: PlayOptions = {}): Promise<void> {
+  async play(slug: string | null | undefined, speed: AudioSpeed): Promise<void> {
     try {
       if (!slug || !this.store.settings().audioEnabled) {
         return;
       }
       this.stop();
       const path = audioPath(slug, speed);
-      const start = options.skipLeadIn ? LEAD_IN_SKIP_S : 0;
       const element = this.getElement(path);
+      // Always from the very start. The 0.3 s lead-in silence (content/audio.md) is what keeps
+      // the first sound from being clipped while the audio output wakes up, so it is never skipped.
       if (this.loadedPath === path && element.readyState >= HAVE_METADATA) {
         // Same recording again: rewind instead of reloading, so it plays without a delay.
-        element.currentTime = start;
+        element.currentTime = 0;
       } else {
-        // A media fragment (#t=) starts playback at the offset as soon as the file loads.
-        element.src = start > 0 ? `${path}#t=${start}` : path;
+        element.src = path;
         this.loadedPath = path;
       }
       this.unlocked = true;
