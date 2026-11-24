@@ -149,6 +149,12 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
     - Listen & Tap is hidden until a category qualifies
     - Tap targets meet 44×44pt
     - _Requirements: 9, 10_
+  - [x] 8.4 Base Start Now on Learn Next
+    - First launch: the Animals flashcards, unchanged
+    - Returning user: a flashcard session over the Learn Next list at `/session/learn-next`, in Learn Next order, rebuilt each pass, with each word's own category emoji as its image fallback
+    - If Learn Next is empty, fall back to the category rule in [First-Run Experience](ux/first-run.md#returning-user)
+    - Tests: first launch, returning user, the empty fallback, the session order, and the per-word emoji
+    - _Requirements: 6, 9_
 
 - [x] 9. Flashcard learning session
   - Build the core zen-mode learning screen for flashcard interaction

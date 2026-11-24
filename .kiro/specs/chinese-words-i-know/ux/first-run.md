@@ -26,11 +26,18 @@ When the buttons do not fit on one screen, the home screen scrolls vertically. S
 
 ## Returning user
 
-When prior data exists, **Start Now** resumes the recommended next session. Its mode is always flashcards. The category is chosen in this order:
+When prior data exists, **Start Now** opens a flashcard session over the **Learn Next** list (see [Learn Next Algorithm](../core/learn-next-algorithm.md)) at `/session/learn-next`:
 
-1. The category with the most words in the Learning state (`[0.3, 0.6)`). Ties go to the category that comes first in content order
-2. If no word is in the Learning state, the first category in content order that still has a word below Known
-3. If every word is Known, the first category in content order
+- The words are the Learn Next list, up to 20, in Learn Next order (highest score first). They can come from any category
+- The list is rebuilt at the start of every pass, so a new pass follows the latest scores. The session is continuous like any flashcard session
+- A word with no image shows the emoji of its own category
+- If the Learn Next list is empty (every word is at `0.6` or above), Start Now opens a single category instead, chosen in this order:
+  1. The category with the most words in the Learning state (`[0.3, 0.6)`). Ties go to the category that comes first in content order
+  2. If no word is in the Learning state, the first category in content order that still has a word below Known
+  3. If every word is Known, the first category in content order
+- The same fallback applies if every word reaches `0.6` during a Learn Next session
+
+The first launch (no prior data) still opens the predetermined first session below, not Learn Next.
 
 The faint settings icon stays in the corner.
 

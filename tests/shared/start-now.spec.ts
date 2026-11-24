@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { selectStartNowCategory } from '@shared/content';
+import { selectStartNowCategory, selectStartNowTarget } from '@shared/content';
+import type { Word } from '@shared/entities';
 import { createDefaultWordState } from '@shared/store';
 import type { UserWordState } from '@shared/entities';
 
@@ -44,5 +45,26 @@ describe('selectStartNowCategory', () => {
   it('with every word Known, picks the first category in content order', () => {
     const all = Object.fromEntries(content.words.map((w) => [w.id, 0.9]));
     expect(selectStartNowCategory(content, states(all))).toBe('colors');
+  });
+});
+
+describe('selectStartNowTarget', () => {
+  const full = {
+    categories: content.categories,
+    words: content.words.map((w) => ({ ...w, frequencyTier: 1 }) as unknown as Word),
+  };
+  it('first launch opens the Animals flashcards, not Learn Next', () => {
+    expect(selectStartNowTarget(full, {})).toEqual({ kind: 'category', categoryId: 'animals' });
+    expect(selectStartNowTarget(full, states({}))).toEqual({ kind: 'category', categoryId: 'animals' });
+  });
+  it('a returning user gets the Learn Next session', () => {
+    expect(selectStartNowTarget(full, states({ rice: 0.4 }))).toEqual({ kind: 'learn-next' });
+  });
+  it('falls back to the recommended category when Learn Next is empty', () => {
+    const all = Object.fromEntries(content.words.map((w) => [w.id, 0.9]));
+    expect(selectStartNowTarget(full, states({ ...all, egg: 0.7 }))).toEqual({ kind: 'category', categoryId: 'food' });
+  });
+  it('returns null without categories', () => {
+    expect(selectStartNowTarget({ categories: [], words: [] }, {})).toBeNull();
   });
 });

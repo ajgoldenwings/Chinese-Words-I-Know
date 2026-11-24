@@ -79,32 +79,21 @@ describe('HomeComponent', () => {
       expect(navigate).toHaveBeenCalledWith(['/session/flashcard', 'animals']);
     });
 
-    it('returning user goes to the category with the most Learning words', () => {
+    it('returning user goes to the Learn Next flashcards', () => {
       const { click, navigate, store } = setup(content(0));
       learn(store, 'rice');
-      learn(store, 'egg');
-      learn(store, 'red');
+      click('start-now');
+      expect(navigate).toHaveBeenCalledWith(['/session/learn-next']);
+    });
+    it('when Learn Next is empty, falls back to the recommended category', () => {
+      const { click, navigate, store } = setup(content(0));
+      // Every word at 0.6 or above, so Learn Next has nothing. 'egg' is Almost There, not Known.
+      for (const id of ['red', 'a0', 'a1', 'a2', 'a3', 'a4', 'rice']) learn(store, id, 0.9);
+      learn(store, 'egg', 0.7);
       click('start-now');
       expect(navigate).toHaveBeenCalledWith(['/session/flashcard', 'food']);
     });
-
-    it('breaks a Learning tie by content order', () => {
-      const { click, navigate, store } = setup(content(0));
-      learn(store, 'a0');
-      learn(store, 'red');
-      click('start-now');
-      expect(navigate).toHaveBeenCalledWith(['/session/flashcard', 'colors']);
-    });
-
-    it('with no Learning words, picks the first category with a word below Known', () => {
-      const { click, navigate, store } = setup(content(0));
-      learn(store, 'red', 0.9);
-      learn(store, 'a0', 0.1);
-      click('start-now');
-      expect(navigate).toHaveBeenCalledWith(['/session/flashcard', 'animals']);
-    });
   });
-
   describe('Listen & Tap', () => {
     it('is hidden when no category has 4 imaged words', () => {
       const { el } = setup(content(3));

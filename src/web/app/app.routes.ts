@@ -9,6 +9,8 @@ export const routes: Routes = [
   { path: '', component: HomeComponent },
   // Placeholders until tasks 10 and 11 replace them.
   { path: 'session/flashcard/:categoryId', component: FlashcardComponent },
+  // Start Now for a returning user: flashcards over the Learn Next list (any category).
+  { path: 'session/learn-next', component: FlashcardComponent, data: { source: 'learn-next' } },
   { path: 'session/listen', component: ListenComponent },
   { path: 'my-words', component: MyWordsComponent },
   { path: '**', redirectTo: '' },

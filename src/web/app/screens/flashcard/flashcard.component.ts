@@ -2,8 +2,9 @@ import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, injec
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { applyCorrectAnswer, applyIncorrectAnswer } from '@shared/confidence';
-import { loadContent } from '@shared/content';
+import { loadContent, selectStartNowCategory } from '@shared/content';
 import type { Word } from '@shared/entities';
+import { buildWordLists } from '@shared/lists';
 import { getWordDisplay, orderWordsForSession } from '@shared/session';
 import { AppStore } from '@shared/store';
 import { map } from 'rxjs';
@@ -37,6 +38,8 @@ export class FlashcardComponent {
     { initialValue: '' },
   );
 
+  /** True on the Learn Next session that Start Now opens. Words then come from any category. */
+  private readonly learnNext = this.route.snapshot.data['source'] === 'learn-next';
   protected readonly category = computed(
     () => this.content.categories.find((c) => c.id === this.categoryId()) ?? null,
   );
@@ -54,7 +57,11 @@ export class FlashcardComponent {
     const w = this.word();
     return w ? getWordDisplay(w, this.store.settings()) : null;
   });
-  protected readonly emoji = computed(() => this.category()?.emoji ?? '🀄');
+  /** The fallback emoji is the current word's category, so it is right in a mixed Learn Next session. */
+  protected readonly emoji = computed(() => {
+    const id = this.word()?.category ?? this.categoryId();
+    return this.content.categories.find((c) => c.id === id)?.emoji ?? '🀄';
+  });
   protected readonly imageUrl = computed(() =>
     this.imageFailed() ? null : this.images.wordImageUrl(this.word()?.imageAsset),
   );
@@ -136,8 +143,22 @@ export class FlashcardComponent {
   }
 
   private startPass(): void {
+    const states = this.store.wordStates();
+    if (this.learnNext) {
+      // Learn Next is rebuilt at the start of every pass, so it follows the latest scores.
+      const words = buildWordLists(this.content.words, states).learnNext;
+      if (words.length > 0) {
+        this.queue.set(words);
+        return;
+      }
+      // Every word reached 0.6 during the session: carry on with the Start Now category.
+      const fallback = selectStartNowCategory(this.content, states);
+      const inFallback = this.content.words.filter((w) => w.category === fallback);
+      this.queue.set(orderWordsForSession(inFallback, states));
+      return;
+    }
     const inCategory = this.content.words.filter((w) => w.category === this.categoryId());
-    this.queue.set(orderWordsForSession(inCategory, this.store.wordStates()));
+    this.queue.set(orderWordsForSession(inCategory, states));
   }
 
   private resetCard(index: number): void {

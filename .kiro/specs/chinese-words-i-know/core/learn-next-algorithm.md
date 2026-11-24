@@ -71,4 +71,6 @@ function learnNextScore(word: Word, state: UserWordState | null, categoryActive:
 
 ## Output
 
+For a returning user, **Start Now** runs a flashcard session over this list. See [First-Run Experience](../ux/first-run.md#returning-user).
+
 The Learn Next list returns the top 20 candidates by score, highest first. Words scoring `-1` are excluded. Ties are broken by content order. The list is recomputed each time the My Words screen renders, so it reflects the current store.

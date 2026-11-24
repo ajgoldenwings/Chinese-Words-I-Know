@@ -248,7 +248,7 @@ chinese-words-i-know/
 | Animation / gestures | Angular Animations + HammerJS | Angular Animations for transitions; HammerJS for long-press and swipe gestures |
 | Styling | Tailwind CSS v4 | Utility-first; CSS-first config (no `tailwind.config.js`); set up through the Angular CLI's Tailwind support |
 | State + persistence | NgRx SignalStore + localStorage | Angular-native signals-based store; localStorage persistence via custom plugin |
-| Routing | Angular Router with hash location | `withHashLocation()` avoids 404s on refresh because GitHub Pages has no rewrites. Routes: `/`, `/session/flashcard/:categoryId`, `/session/listen`, `/my-words`. Settings is an overlay with no route |
+| Routing | Angular Router with hash location | `withHashLocation()` avoids 404s on refresh because GitHub Pages has no rewrites. Routes: `/`, `/session/flashcard/:categoryId`, `/session/learn-next` (Start Now for a returning user), `/session/listen`, `/my-words`. Settings is an overlay with no route |
 | Testing | Vitest + Angular Testing Library | Vitest is the Angular CLI's default runner, so no extra plugin is needed |
 | Audio | `HTMLAudioElement` (native) | No dependency needed for pre-recorded file playback; works in Capacitor WebViews |
 | Offline | Angular service worker (PWA) | Precaches the app shell; caches images and audio on first use |

@@ -4,6 +4,7 @@ import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { describe, expect, it, vi } from 'vitest';
 import { loadContent } from '@shared/content';
+import { buildWordLists } from '@shared/lists';
 import { APP_STORAGE, AppStore, MemoryStorage, createDefaultWordState } from '@shared/store';
 import { AudioService } from '../../src/web/app/services/audio.service';
 import { CARD_AUDIO_MAX_WAIT_MS, FlashcardComponent } from '../../src/web/app/screens/flashcard/flashcard.component';
@@ -176,5 +177,57 @@ describe('FlashcardComponent audio', () => {
     fire('load');
     expect(play).toHaveBeenCalledTimes(1);
     expect(play).toHaveBeenCalledWith(words[1].audioAsset, 'natural');
+  });
+});
+describe('Learn Next session (Start Now)', () => {
+  async function learnNextSetup(seed: (store: InstanceType<typeof AppStore>) => void = () => undefined) {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([{ path: 'session/learn-next', component: FlashcardComponent, data: { source: 'learn-next' } }]),
+        { provide: APP_STORAGE, useValue: new MemoryStorage() },
+      ],
+    });
+    const store = TestBed.inject(AppStore);
+    seed(store);
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/session/learn-next');
+    harness.detectChanges();
+    const el = harness.routeNativeElement as HTMLElement;
+    const answer = () => {
+      (el.querySelector('main > button') as HTMLElement).click();
+      harness.detectChanges();
+      (el.querySelector('.got-it') as HTMLElement).click();
+      harness.detectChanges();
+    };
+    return { el, store, answer };
+  }
+  it('shows the Learn Next words in Learn Next order, across categories', async () => {
+    const content = loadContent();
+    const { el, store, answer } = await learnNextSetup();
+    const expected = buildWordLists(content.words, store.wordStates()).learnNext.map((w) => w.english);
+    expect(expected.length).toBeGreaterThan(0);
+    const seen: (string | undefined)[] = [];
+    for (let i = 0; i < Math.min(expected.length, 5); i++) {
+      seen.push(english(el));
+      answer();
+    }
+    expect(seen).toEqual(expected.slice(0, seen.length));
+  });
+  it('uses each word\'s own category emoji when there is no image', async () => {
+    const content = loadContent();
+    const { el, store } = await learnNextSetup();
+    const first = buildWordLists(content.words, store.wordStates()).learnNext[0];
+    el.querySelector('img')?.dispatchEvent(new Event('error'));
+    TestBed.tick();
+    const emoji = content.categories.find((c) => c.id === first.category)!.emoji;
+    expect(el.querySelector('main button span[aria-hidden="true"]')?.textContent?.trim()).toBe(emoji);
+  });
+  it('falls back to a category when every word is at 0.6 or above', async () => {
+    const content = loadContent();
+    const { el } = await learnNextSetup((store) => {
+      for (const w of content.words) store.setWordState({ ...createDefaultWordState(w.id), confidenceScore: 0.7, timesSeenCount: 2 });
+    });
+    expect(english(el)).toBeTruthy();
   });
 });

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { loadContent, selectStartNowCategory, type Content } from '@shared/content';
+import { loadContent, selectStartNowTarget, type Content } from '@shared/content';
 import { AppStore } from '@shared/store';
 import { SettingsPanelComponent } from '../settings/settings-panel.component';
 
@@ -39,9 +39,10 @@ export class HomeComponent {
     this.settingsOpen.set(true);
   }
 
-  /** First launch: Animals. Returning user: the recommended category. Always flashcards. */
+  /** First launch: Animals. Returning user: the Learn Next words. Always flashcards. */
   startNow(): void {
-    const id = selectStartNowCategory(this.content, this.store.wordStates());
-    if (id) void this.router.navigate(['/session/flashcard', id]);
+    const target = selectStartNowTarget(this.content, this.store.wordStates());
+    if (target?.kind === 'learn-next') void this.router.navigate(['/session/learn-next']);
+    else if (target) void this.router.navigate(['/session/flashcard', target.categoryId]);
   }
 }

@@ -1,5 +1,6 @@
 import { getWordState, isKnown } from '../confidence';
-import type { UserWordState } from '../entities';
+import type { UserWordState, Word } from '../entities';
+import { buildWordLists } from '../lists';
 
 /** The predetermined first session. */
 export const FIRST_SESSION_CATEGORY_ID = 'animals';
@@ -60,4 +61,25 @@ export function selectStartNowCategory(
   if (best !== null) return best;
 
   return ids.find((id) => hasUnknown.has(id)) ?? ids[0];
+}
+
+/** Where Start Now goes: the first session, the Learn Next words, or a category as a fallback. */
+export type StartNowTarget =
+  | { kind: 'category'; categoryId: string }
+  | { kind: 'learn-next' };
+
+/**
+ * Start Now (ux/first-run.md). First launch: the Animals flashcards. Returning user: a flashcard
+ * session over the Learn Next list. If Learn Next is empty (every word is at 0.6 or above),
+ * the category chosen by `selectStartNowCategory`. Returns null only when there is no content.
+ */
+export function selectStartNowTarget(
+  content: StartNowContent & { words: readonly Word[] },
+  wordStates: Readonly<Record<string, UserWordState>>,
+): StartNowTarget | null {
+  if (hasPriorData(wordStates) && buildWordLists(content.words, wordStates).learnNext.length > 0) {
+    return { kind: 'learn-next' };
+  }
+  const categoryId = selectStartNowCategory(content, wordStates);
+  return categoryId ? { kind: 'category', categoryId } : null;
 }
