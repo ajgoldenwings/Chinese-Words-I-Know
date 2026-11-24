@@ -187,11 +187,17 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
     - Right and wrong feedback never relies on color alone; add a shape or motion change (see [Accessibility](ux/accessibility.md))
     - The mode is offered only for categories with at least 4 imaged words (see [First-Run Experience](ux/first-run.md))
     - _Requirements: 2, 5, 9_
+  - [x] 10.4 Play audio on display and on every press
+    - The target word's slow recording plays when a round's pictures are displayed
+    - After each press of a picture, that picture's word plays (slow). A repeat press on a wrong picture plays it again. A word without a recording stays silent
+    - See [Progressive Disclosure](ux/progressive-disclosure.md) and [Audio](content/audio.md)
+    - _Requirements: 2, 7_
   - [x] 10.3 Write listen + tap tests
     - The correct tile always scores the target; a wrong tile penalizes the target
     - Distractors never include the target and come from the same category
     - The mode is unavailable below 4 imaged words
     - The text prompt shows when audio is unavailable
+    - Pressing a tile plays that tile's word, including a repeat press on a wrong tile, and not after the round is solved
     - _Requirements: 2, 7_
 
 - [x] 11. My Words screen

@@ -8,7 +8,7 @@ All audio is pre-recorded by a native Mandarin speaker. No TTS is used in this v
 
 Each word has two recordings:
 - **Natural** — spoken at a normal conversational pace; plays on flashcard reveal
-- **Slow** — spoken clearly and slowly; plays in listen + tap mode to help young learners isolate the sounds
+- **Slow** — spoken clearly and slowly; plays in listen + tap mode to help young learners isolate the sounds. It plays twice per round: when the pictures appear (the target word), and after every press of a picture (the pressed picture's word). See [Progressive Disclosure](../ux/progressive-disclosure.md)
 
 ## Format and Quality
 

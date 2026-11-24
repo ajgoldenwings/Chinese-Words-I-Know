@@ -18,6 +18,7 @@ Each flag is independent; enabling one does not require enabling another. Settin
 - `audioEnabled` defaults to `true`; it can be toggled off in settings if the parent prefers a silent session
 - `cloudSyncEnabled` has no toggle. See **Cloud section** below
 - New flags are appended to this table as features are added; the settings panel renders them in the order defined here
+- **Listen + tap audio:** the target word's slow recording plays as soon as a round's pictures are displayed. After every press of a picture, the slow recording of the pressed picture's word plays, whether the press was right or wrong and including a repeat press on a wrong picture. A new press stops any recording still playing. Presses after the round is solved do nothing, because the tiles are disabled. A word with no recording stays silent, and the English prompt still shows when the target has no recording or `audioEnabled` is off
 - **Pinyin fallback:** when a word would otherwise give the learner no Chinese (no audio for the word, or `audioEnabled` is off) and both `showPinyin` and `showCharacters` are off, session screens show that word's pinyin anyway. The fallback applies per word and never changes the saved settings
 
 **Cloud section (bottom of the settings panel):**

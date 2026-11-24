@@ -104,6 +104,36 @@ describe('ListenComponent', () => {
     expect(el.querySelector('[data-testid="prompt"]')?.textContent?.trim()).toBe('en-w1');
   });
 
+  it('plays the pressed word on every press of a wrong tile, including a repeat', () => {
+    const { tiles, click, play } = setup();
+    // w0 is the target and has no recording. Only w1 has one.
+    const wrong = tiles().filter((t) => t.dataset['wordId'] !== 'w0');
+    play.mockClear();
+    click(wrong[0]);
+    expect(play).toHaveBeenCalledTimes(1);
+    expect(play).toHaveBeenLastCalledWith(wrong[0].dataset['wordId'] === 'w1' ? 'w1' : null, 'slow');
+    click(wrong[0]);
+    expect(play).toHaveBeenCalledTimes(2);
+    click(wrong[1]);
+    expect(play).toHaveBeenCalledTimes(3);
+  });
+  it('plays the pressed word for a tile that has a recording', () => {
+    const { tiles, click, play } = setup();
+    const withAudio = tiles().find((t) => t.dataset['wordId'] === 'w1');
+    expect(withAudio).toBeDefined();
+    play.mockClear();
+    click(withAudio!);
+    expect(play).toHaveBeenCalledWith('w1', 'slow');
+  });
+  it('plays the pressed word on the correct tile, and nothing after the round is solved', () => {
+    const { tile, tiles, click, play } = setup();
+    play.mockClear();
+    click(tile('w0'));
+    expect(play).toHaveBeenCalledTimes(1);
+    expect(play).toHaveBeenCalledWith(null, 'slow');
+    click(tiles().find((t) => t.dataset['wordId'] !== 'w0')!); // disabled once solved
+    expect(play).toHaveBeenCalledTimes(1);
+  });
   it('redirects home when no category has 4 imaged words', () => {
     const { navigate, tiles } = setup(3);
     expect(navigate).toHaveBeenCalledWith('/');

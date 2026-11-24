@@ -84,10 +84,13 @@ export class ListenComponent {
     this.failedImages.update((s) => new Set(s).add(word.id));
   }
 
-  /** Scores the target: correct tile raises it, the first wrong tile of a round lowers it. */
+  /** Plays the pressed word, then scores the target: a correct tile raises it, the first wrong tile of a round lowers it. */
   protected onTileTap(word: Word): void {
     const t = this.target();
-    if (!t || this.solved() || this.wrongIds().has(word.id)) return;
+    if (!t || this.solved()) return;
+    // Every press says the word for the picture that was pressed, including a repeat press on a wrong tile.
+    void this.audio.play(word.audioAsset, 'slow');
+    if (this.wrongIds().has(word.id)) return;
     const state = this.store.getWordState(t.id);
     if (word.id === t.id) {
       this.store.setWordState(applyCorrectAnswer(state, 'listening'));
