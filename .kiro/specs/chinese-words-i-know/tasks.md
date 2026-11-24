@@ -163,6 +163,7 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
   - [x] 9.4 Play audio when the image is displayed and on every press
     - The natural recording plays once when the card's image loads, fails to the emoji, or has no image, and after 1.5 seconds at most if the image is slow
     - Every press of the card plays the word, not only the first; the first press also reveals ✓ and ✗
+    - A press plays with no delay: no wait for the image, no reload of the same recording, and the lead-in silence skipped
     - A press before the image loads replaces the load sound. Answering stops the sound, and the next card plays when its image loads
     - `AudioService` is created at app start, reuses one audio element, and unlocks it with a short silence on the first tap, so the sound that plays when the image loads (outside a tap) still plays on iOS Safari (see [Web](platforms/web.md#audio-playback))
     - See [Progressive Disclosure](ux/progressive-disclosure.md) and [Audio](content/audio.md)
@@ -180,6 +181,7 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
     - Pinyin appears automatically for a word with no audio when both text settings are off
     - The word plays once when the image loads or fails, after the 1.5 second wait at most, on every press, and for the next card when its image loads
     - `AudioService` reuses one element and plays the unlock silence once
+    - Replaying the same recording rewinds instead of reloading, and `skipLeadIn` starts at 0.25 s
     - _Requirements: 2, 3, 5_
 
 - [x] 10. Listen and tap mode
@@ -226,6 +228,11 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
     - A "known" override puts a word in Known immediately
     - Learn Next returns words in score order and excludes words at `0.6` or above
     - _Requirements: 5, 6_
+  - [x] 11.4 Limit Almost There to the top 10 and show the confidence state label
+    - Almost There shows at most 10 words that are not Known and score above 0, with no score threshold; highest score first, content order on ties (see [Confidence Model](core/confidence-model.md#list-membership))
+    - Each Almost There entry shows its confidence state label ("New", "Learning", "Almost There", "I Know This") as a text badge
+    - Tests: the limit, the order, words below 0.6 included, score 0 and Known left out, the label for each band, and no label in Known or Learn Next
+    - _Requirements: 6_
 
 - [x] 12. Settings panel
   - Build the settings panel and wire every `UserSettings` flag to the UI

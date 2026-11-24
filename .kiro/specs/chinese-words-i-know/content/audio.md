@@ -17,7 +17,7 @@ Each word has two recordings:
 | Format | MP3 | Universal support across all browsers, iOS, and Android |
 | Sample rate | 44.1 kHz | Standard for speech recordings |
 | Bit rate | 128 kbps mono | High enough quality for clear speech; ~60–80 KB per file |
-| Silence padding | 0.3s before, 0.3s after | Prevents clipping; gives the child a moment before and after the word |
+| Silence padding | 0.3s before, 0.3s after | Prevents clipping; gives the child a moment before and after the word. When the child presses a flashcard, playback starts 0.25 s in, skipping most of the lead-in so the word sounds at once. Sound that plays by itself (when an image loads) keeps the full padding |
 | Approximate total size | ~160 MB | 2000 files × ~80 KB average |
 
 ## File Naming Convention

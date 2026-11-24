@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
 import { AppStore, APP_STORAGE, MemoryStorage } from '@shared/store';
 import { environment } from '../../src/web/environments/environment';
-import { AUDIO_ELEMENT_FACTORY, AudioService, SILENT_WAV } from '../../src/web/app/services/audio.service';
+import { AUDIO_ELEMENT_FACTORY, AudioService, LEAD_IN_SKIP_S, SILENT_WAV } from '../../src/web/app/services/audio.service';
 
 function setup(play: () => Promise<void> = () => Promise.resolve()) {
   const sources: string[] = [];
@@ -110,5 +110,69 @@ describe('AudioService', () => {
   });
   it('the silence is a valid WAV data URI', () => {
     expect(SILENT_WAV.startsWith('data:audio/wav;base64,UklGR')).toBe(true);
+  });
+  /** A fake element that has finished loading and counts how often its source is set. */
+  class LoadedElement {
+    private source = '';
+    currentTime = 0;
+    readonly readyState = 4;
+    srcSets = 0;
+    get src(): string {
+      return this.source;
+    }
+    set src(value: string) {
+      this.source = value;
+      this.srcSets++;
+      this.currentTime = 0;
+    }
+    play(): Promise<void> {
+      return Promise.resolve();
+    }
+    pause(): void {}
+  }
+  function loadedElement() {
+    let el!: LoadedElement;
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: APP_STORAGE, useValue: new MemoryStorage() },
+        {
+          provide: AUDIO_ELEMENT_FACTORY,
+          useValue: () => {
+            el = new LoadedElement();
+            return el as unknown as HTMLAudioElement;
+          },
+        },
+      ],
+    });
+    return { service: TestBed.inject(AudioService), el: () => el };
+  }
+  it('replaying the same recording rewinds instead of reloading it', async () => {
+    const { service, el } = loadedElement();
+    await service.play('mao', 'natural');
+    await service.play('mao', 'natural');
+    await service.play('mao', 'natural');
+    expect(el().srcSets).toBe(1);
+    expect(el().currentTime).toBe(0);
+  });
+  it('skipLeadIn starts after the lead-in silence, on a new or a repeated recording', async () => {
+    const { service, el } = loadedElement();
+    await service.play('mao', 'natural', { skipLeadIn: true });
+    expect(el().src).toBe(`assets/audio/words/mao/mao-natural.mp3#t=${LEAD_IN_SKIP_S}`);
+    await service.play('mao', 'natural', { skipLeadIn: true });
+    expect(el().srcSets).toBe(1);
+    expect(el().currentTime).toBe(LEAD_IN_SKIP_S);
+    await service.play('mao', 'natural');
+    expect(el().currentTime).toBe(0);
+  });
+  it('a different recording loads its own file', async () => {
+    const { service, el } = loadedElement();
+    await service.play('mao', 'natural');
+    await service.play('gou', 'natural');
+    expect(el().src).toBe('assets/audio/words/gou/gou-natural.mp3');
+    expect(el().srcSets).toBe(2);
+  });
+  it('the lead-in skip is shorter than the 0.3 s padding', () => {
+    expect(LEAD_IN_SKIP_S).toBeLessThan(0.3);
   });
 });

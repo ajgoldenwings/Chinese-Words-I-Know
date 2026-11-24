@@ -118,7 +118,8 @@ describe('ListenComponent', () => {
     expect(play).toHaveBeenCalledTimes(3);
   });
   it('plays the pressed word for a tile that has a recording', () => {
-    const { tiles, click, play } = setup();
+    // With exactly 4 imaged words every one is a tile, so w1 is always shown.
+    const { tiles, click, play } = setup(4);
     const withAudio = tiles().find((t) => t.dataset['wordId'] === 'w1');
     expect(withAudio).toBeDefined();
     play.mockClear();

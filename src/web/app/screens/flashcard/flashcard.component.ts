@@ -81,7 +81,8 @@ export class FlashcardComponent {
     this.cardAudioPlayed = true;
     this.clearFallback();
     this.revealed.set(true);
-    void this.audio.play(w.audioAsset, 'natural');
+    // A press plays at once: no wait for the image, and the recording's lead-in silence is skipped.
+    void this.audio.play(w.audioAsset, 'natural', { skipLeadIn: true });
   }
 
   protected onImageLoad(): void {

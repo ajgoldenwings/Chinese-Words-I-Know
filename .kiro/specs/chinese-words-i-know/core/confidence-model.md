@@ -43,5 +43,7 @@ The parent can long-press a word in My Words to override its state.
 | List | A word belongs when |
 |---|---|
 | **Words I Know** (Known) | `manualOverride` is `"known"`, or the score is `≥ 0.85` and `timesSeenCount ≥ 5` |
-| **Almost There** | the score is `≥ 0.6` and the word is not Known |
+| **Almost There** | the word is not Known and its score is above `0`. There is no score threshold. The list shows at most the **top 10**: highest score first (closest to Known), with content order breaking ties |
 | **Learn Next** | see [Learn Next Algorithm](learn-next-algorithm.md) |
+
+Each word in the Almost There list shows its **confidence state label** from the table at the top, as a small outlined text badge under the English word. The label comes from the score band alone, so it can be any of the four: "New", "Learning", "Almost There", or "I Know This" (a word at `0.85` or above with fewer than 5 answers is not Known yet, so it stays in Almost There). Because the list has no threshold, a word can be in both Almost There and Learn Next. The label is text, not color, so it never relies on color alone. Known and Learn Next show no label.

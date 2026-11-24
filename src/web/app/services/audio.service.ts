@@ -3,6 +3,15 @@ import { AppStore } from '@shared/store';
 import { environment } from '../../environments/environment';
 
 export type AudioSpeed = 'natural' | 'slow';
+export interface PlayOptions {
+  /**
+   * Start just after the 0.3 s of silence every recording begins with (content/audio.md),
+   * so a press sounds at once. Used for presses, not for sound that plays by itself.
+   */
+  skipLeadIn?: boolean;
+}
+/** Seconds skipped with `skipLeadIn`. A little under the 0.3 s padding so no speech is cut. */
+export const LEAD_IN_SKIP_S = 0.25;
 
 /** Creates the element that plays one file. Replaceable in tests. */
 export const AUDIO_ELEMENT_FACTORY = new InjectionToken<(src: string) => HTMLAudioElement>(
@@ -16,6 +25,9 @@ export function audioPath(slug: string, speed: AudioSpeed): string {
   const path = `assets/audio/words/${slug}/${slug}-${speed}.mp3`;
   return base ? `${base}/${path}` : path;
 }
+
+/** `HTMLMediaElement.HAVE_METADATA`: the duration is known, so `currentTime` can be set. */
+const HAVE_METADATA = 1;
 
 /** A tenth of a second of silence (8 kHz, 8-bit mono WAV). Played once on the first tap to unlock audio. */
 export const SILENT_WAV = (() => {
@@ -56,6 +68,8 @@ export class AudioService {
   private readonly createElement = inject(AUDIO_ELEMENT_FACTORY);
   private element: HTMLAudioElement | null = null;
   private unlocked = false;
+  /** Path of the recording loaded in the element, or null for none or the unlock silence. */
+  private loadedPath: string | null = null;
   constructor() {
     const doc = globalThis.document;
     if (!doc?.addEventListener) return;
@@ -74,20 +88,29 @@ export class AudioService {
     try {
       const el = this.getElement(SILENT_WAV);
       el.src = SILENT_WAV;
+      this.loadedPath = null;
       void Promise.resolve(el.play()).catch(() => undefined);
     } catch {
       // Unlocking is best effort.
     }
   }
-  async play(slug: string | null | undefined, speed: AudioSpeed): Promise<void> {
+  async play(slug: string | null | undefined, speed: AudioSpeed, options: PlayOptions = {}): Promise<void> {
     try {
       if (!slug || !this.store.settings().audioEnabled) {
         return;
       }
       this.stop();
       const path = audioPath(slug, speed);
+      const start = options.skipLeadIn ? LEAD_IN_SKIP_S : 0;
       const element = this.getElement(path);
-      element.src = path;
+      if (this.loadedPath === path && element.readyState >= HAVE_METADATA) {
+        // Same recording again: rewind instead of reloading, so it plays without a delay.
+        element.currentTime = start;
+      } else {
+        // A media fragment (#t=) starts playback at the offset as soon as the file loads.
+        element.src = start > 0 ? `${path}#t=${start}` : path;
+        this.loadedPath = path;
+      }
       this.unlocked = true;
       await element.play();
     } catch {

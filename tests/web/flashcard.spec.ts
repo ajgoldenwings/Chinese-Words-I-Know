@@ -144,6 +144,9 @@ describe('FlashcardComponent audio', () => {
     press();
     press();
     expect(play).toHaveBeenCalledTimes(4);
+    // Presses play at once, skipping the lead-in silence. The load sound keeps it.
+    expect(play.mock.calls[0]).toEqual([words[0].audioAsset, 'natural']);
+    expect(play).toHaveBeenLastCalledWith(words[0].audioAsset, 'natural', { skipLeadIn: true });
     expect(el.querySelector('.got-it')).not.toBeNull();
   });
   it('a press before the image loads replaces the load sound', async () => {

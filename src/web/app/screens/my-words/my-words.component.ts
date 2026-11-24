@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { applyManualOverride, isAlmostThere, isKnown } from '@shared/confidence';
+import { applyManualOverride, confidenceLabel, isAlmostThere, isKnown } from '@shared/confidence';
 import { loadContent } from '@shared/content';
 import type { UserWordState, Word } from '@shared/entities';
 import { buildWordLists } from '@shared/lists';
@@ -14,6 +14,8 @@ interface Section {
   title: string;
   empty: string;
   words: Word[];
+  /** Confidence state label per word id. Only Almost There shows labels. */
+  labels?: Readonly<Record<string, string>>;
 }
 
 @Component({
@@ -34,9 +36,10 @@ export class MyWordsComponent {
     const states: Record<string, UserWordState> = {};
     for (const s of activeWordStates(this.store.wordStates(), this.content)) states[s.wordId] = s;
     const lists = buildWordLists(this.content.words, states);
+    const labels = Object.fromEntries(lists.almostThere.map((w) => [w.id, confidenceLabel(states[w.id])]));
     return [
       { id: 'known', title: 'Known', empty: 'No words here yet. Keep practicing together.', words: lists.known },
-      { id: 'almost-there', title: 'Almost There', empty: 'No words here yet.', words: lists.almostThere },
+      { id: 'almost-there', title: 'Almost There', empty: 'No words here yet.', words: lists.almostThere, labels },
       { id: 'learn-next', title: 'Learn Next', empty: 'No more words to suggest right now.', words: lists.learnNext },
     ];
   });

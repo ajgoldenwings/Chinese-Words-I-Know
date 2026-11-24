@@ -8,7 +8,7 @@ The "Learn Next" list surfaces the words that will most improve the learner's ab
 
 ## Which words are candidates
 
-A word is a candidate when its `confidenceScore` is below `0.6` (New or Learning), including words that have never been seen. Words at `0.6` or above are excluded because they belong in Almost There or Known. See [Confidence Model](confidence-model.md).
+A word is a candidate when its `confidenceScore` is below `0.6` (New or Learning), including words that have never been seen. Words at `0.6` or above are excluded, because they are nearly or fully learned. Almost There has no score threshold, so a candidate with a score above `0` can also appear there. See [Confidence Model](confidence-model.md).
 
 ## Input signals
 

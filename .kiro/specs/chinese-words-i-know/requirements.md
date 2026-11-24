@@ -19,7 +19,7 @@ Tasks cite these by number (for example `_Requirements: 5, 6_`).
 3. **Chinese:** Mandarin, simplified characters. Pinyin and character display are off by default, toggleable as settings
 4. **Content:** Thematic categories (animals, food, colors, etc.) as the structure for learning. Lessons are a future feature. ~1000 word ceiling
 5. **Word knowledge model:** App-driven confidence scoring (auto tracks right/wrong) with manual parent override (mark known/unknown). Confidence model is defined in [Confidence Model](core/confidence-model.md)
-6. **Word lists:** "Words I Know" (Known), "Almost There" (close to known), "Learn Next" (recommended queue)
+6. **Word lists:** "Words I Know" (Known), "Almost There" (the 10 highest-scoring words above 0 that are not yet known, each with its confidence state label), "Learn Next" (recommended queue)
 7. **Audio:** Pre-recorded audio files only. Audio is on by default and can be turned off in settings. Words without a recording show the English word as a text prompt instead. TTS fallback is a future feature
 8. **Offline:** After the first load the app works without a connection (service worker). Progress is saved on the device and syncs when the connection returns
 9. **Zen mode:** During a learning session, screen is full-screen image + word, only a small faint back button visible. Home screen is minimal

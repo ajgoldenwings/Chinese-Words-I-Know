@@ -28,6 +28,9 @@
                   <span class="flex size-20 items-center justify-center text-5xl leading-none" aria-hidden="true">{{ emoji(w) }}</span>
                 }
                 <span class="text-center text-lg">{{ w.english }}</span>
+                @if (section.labels?.[w.id]; as label) {
+                  <span class="rounded-full border border-slate-400 px-2 py-0.5 text-sm text-slate-700" data-testid="confidence-label">{{ label }}</span>
+                }
               </button>
             </li>
           }

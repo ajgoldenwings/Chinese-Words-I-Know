@@ -82,6 +82,17 @@ export function getWordState(state: UserWordState): WordStateBand {
   return 'new';
 }
 
+/** Confidence state labels from core/confidence-model.md, by score band. */
+export const CONFIDENCE_LABELS: Record<WordStateBand, string> = {
+  new: 'New',
+  learning: 'Learning',
+  'almost-there': 'Almost There',
+  known: 'I Know This',
+};
+/** The confidence state label for a word's score, e.g. "Almost There". */
+export function confidenceLabel(state: UserWordState): string {
+  return CONFIDENCE_LABELS[getWordState(state)];
+}
 /** Words I Know list: "known" override, or score >= 0.85 with at least 5 answered prompts. */
 export function isKnown(state: UserWordState): boolean {
   return (

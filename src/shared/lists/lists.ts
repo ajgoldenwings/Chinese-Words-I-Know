@@ -1,7 +1,9 @@
-import { ALMOST_THERE_THRESHOLD, isAlmostThere, isKnown } from '../confidence';
+import { ALMOST_THERE_THRESHOLD, isKnown } from '../confidence';
 import type { Word, UserWordState } from '../entities';
 
 export const LEARN_NEXT_LIMIT = 20;
+/** Almost There shows at most this many words: any score above 0 that is not Known, highest first. */
+export const ALMOST_THERE_LIMIT = 10;
 /** A category is active when the average confidence of its seen words is above this. */
 export const CATEGORY_ACTIVE_THRESHOLD = 0.3;
 
@@ -47,7 +49,8 @@ export function activeCategoryIds(
 }
 
 /**
- * Builds the three My Words lists in content order (Learn Next in score order).
+ * Builds the three My Words lists. Known is in content order. Almost There is the top 10 words
+ * that are not Known and score above 0, by confidence score. Learn Next is the top 20 by Learn Next score.
  * `wordStates` should already exclude orphans (see `activeWordStates`); only words in `words` are listed.
  */
 export function buildWordLists(
@@ -55,13 +58,17 @@ export function buildWordLists(
   wordStates: Readonly<Record<string, UserWordState>>,
 ): WordLists {
   const known: Word[] = [];
-  const almostThere: Word[] = [];
-  for (const w of words) {
+  const almost: { word: Word; score: number; order: number }[] = [];
+  words.forEach((w, order) => {
     const s = wordStates[w.id];
-    if (!s) continue;
+    if (!s) return;
     if (isKnown(s)) known.push(w);
-    else if (isAlmostThere(s)) almostThere.push(w);
-  }
+    // No score threshold: any word with progress (score above 0) that is not Known.
+    else if (s.confidenceScore > 0) almost.push({ word: w, score: s.confidenceScore, order });
+  });
+  // The words nearest to Known: highest score first, content order on ties, then the top 10.
+  almost.sort((a, b) => b.score - a.score || a.order - b.order);
+  const almostThere = almost.slice(0, ALMOST_THERE_LIMIT).map((x) => x.word);
 
   const active = activeCategoryIds(words, wordStates);
   const scored: { word: Word; score: number; order: number }[] = [];
