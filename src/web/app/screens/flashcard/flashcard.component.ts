@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { applyCorrectAnswer, applyIncorrectAnswer } from '@shared/confidence';
@@ -9,6 +9,9 @@ import { AppStore } from '@shared/store';
 import { map } from 'rxjs';
 import { AudioService } from '../../services/audio.service';
 import { ImageService } from '../../services/image.service';
+
+/** Longest wait for a card's image to load before its word plays anyway. */
+export const CARD_AUDIO_MAX_WAIT_MS = 1500;
 
 @Component({
   selector: 'app-flashcard',
@@ -43,6 +46,9 @@ export class FlashcardComponent {
   protected readonly index = signal(0);
   protected readonly revealed = signal(false);
   private readonly imageFailed = signal(false);
+  /** True once this card's word has played after its image appeared. */
+  private cardAudioPlayed = false;
+  private fallbackTimer: ReturnType<typeof setTimeout> | null = null;
   protected readonly word = computed(() => this.queue()[this.index()] ?? null);
   protected readonly display = computed(() => {
     const w = this.word();
@@ -54,6 +60,10 @@ export class FlashcardComponent {
   );
 
   constructor() {
+    inject(DestroyRef).onDestroy(() => {
+      this.clearFallback();
+      this.audio.stop();
+    });
     // A new category starts from the first card.
     effect(() => {
       this.categoryId();
@@ -64,14 +74,38 @@ export class FlashcardComponent {
     });
   }
 
-  protected reveal(): void {
-    if (this.revealed() || !this.word()) return;
+  /** Every press on the card plays the word. The first press also reveals the answer buttons. */
+  protected onCardPress(): void {
+    const w = this.word();
+    if (!w) return;
+    this.cardAudioPlayed = true;
+    this.clearFallback();
     this.revealed.set(true);
-    void this.audio.play(this.word()!.audioAsset, 'natural');
+    void this.audio.play(w.audioAsset, 'natural');
+  }
+
+  protected onImageLoad(): void {
+    this.playCardAudio();
   }
 
   protected onImageError(): void {
     this.imageFailed.set(true);
+    // The emoji shows instead, which counts as the image being displayed.
+    this.playCardAudio();
+  }
+
+  /** Plays the word once per card, when its image is displayed. */
+  private playCardAudio(): void {
+    const w = this.word();
+    if (!w || this.cardAudioPlayed) return;
+    this.cardAudioPlayed = true;
+    this.clearFallback();
+    void this.audio.play(w.audioAsset, 'natural');
+  }
+
+  private clearFallback(): void {
+    if (this.fallbackTimer !== null) clearTimeout(this.fallbackTimer);
+    this.fallbackTimer = null;
   }
 
   protected gotIt(): void {
@@ -109,5 +143,15 @@ export class FlashcardComponent {
     this.index.set(index);
     this.revealed.set(false);
     this.imageFailed.set(false);
+    this.cardAudioPlayed = false;
+    this.clearFallback();
+    if (!this.word()) return;
+    if (this.imageUrl() === null) {
+      // No image: the emoji is displayed at once, so play now.
+      this.playCardAudio();
+    } else {
+      // A slow image never holds the sound back for long.
+      this.fallbackTimer = setTimeout(() => this.playCardAudio(), CARD_AUDIO_MAX_WAIT_MS);
+    }
   }
 }

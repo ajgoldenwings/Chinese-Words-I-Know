@@ -4,10 +4,10 @@
 
 ## Overview
 
-All audio is pre-recorded by a native Mandarin speaker. No TTS is used in this version. Audio is enabled by default (`audioEnabled: true`) and can be turned off via the settings toggle. When enabled, every word that has a recording plays automatically on card reveal and in listen + tap mode. Words without a recording stay silent and the UI shows the English word instead. If pinyin and character display are both off, the word's pinyin is shown as a fallback so the learner still sees some Chinese (see [Progressive Disclosure](../ux/progressive-disclosure.md)).
+All audio is pre-recorded by a native Mandarin speaker. No TTS is used in this version. Audio is enabled by default (`audioEnabled: true`) and can be turned off via the settings toggle. When enabled, every word that has a recording plays automatically when its flashcard image is displayed, again on every press of the card, and in listen + tap mode. Words without a recording stay silent and the UI shows the English word instead. If pinyin and character display are both off, the word's pinyin is shown as a fallback so the learner still sees some Chinese (see [Progressive Disclosure](../ux/progressive-disclosure.md)).
 
 Each word has two recordings:
-- **Natural** — spoken at a normal conversational pace; plays on flashcard reveal
+- **Natural** — spoken at a normal conversational pace; plays in flashcard mode when the card's image is displayed and after every press of the card
 - **Slow** — spoken clearly and slowly; plays in listen + tap mode to help young learners isolate the sounds. It plays twice per round: when the pictures appear (the target word), and after every press of a picture (the pressed picture's word). See [Progressive Disclosure](../ux/progressive-disclosure.md)
 
 ## Format and Quality

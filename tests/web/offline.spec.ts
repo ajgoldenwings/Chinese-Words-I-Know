@@ -129,7 +129,8 @@ describe('cached and uncached words offline (flashcard)', () => {
     const { harness, el, played } = await open(false);
     (el.querySelector('main > button') as HTMLElement).click();
     harness.detectChanges();
-    expect(played.map((p) => p.speed)).toEqual(['natural']); // AudioService resolves silently if the file is missing
+    // Once when the emoji is shown, once on the press. AudioService resolves silently if the file is missing.
+    expect(played.map((p) => p.speed)).toEqual(['natural', 'natural']);
     expect(el.querySelector('.got-it')).not.toBeNull();
   });
 });
@@ -143,9 +144,17 @@ describe('AudioService with cached and uncached files', () => {
         { provide: APP_STORAGE, useValue: new MemoryStorage() },
         {
           provide: AUDIO_ELEMENT_FACTORY,
+          // One element is reused, so record the source each time it plays.
           useValue: (src: string) => {
-            sources.push(src);
-            return { play, pause: () => undefined } as unknown as HTMLAudioElement;
+            const el = {
+              src,
+              play: () => {
+                if (!el.src.startsWith('data:')) sources.push(el.src);
+                return play();
+              },
+              pause: () => undefined,
+            };
+            return el as unknown as HTMLAudioElement;
           },
         },
       ],

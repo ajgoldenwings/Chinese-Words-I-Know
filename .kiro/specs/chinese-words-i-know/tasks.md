@@ -160,6 +160,13 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
     - Only a small faint back button is shown; its tap target is still at least 44×44pt
     - Nothing times out or advances on its own
     - _Requirements: 2, 7, 9_
+  - [x] 9.4 Play audio when the image is displayed and on every press
+    - The natural recording plays once when the card's image loads, fails to the emoji, or has no image, and after 1.5 seconds at most if the image is slow
+    - Every press of the card plays the word, not only the first; the first press also reveals ✓ and ✗
+    - A press before the image loads replaces the load sound. Answering stops the sound, and the next card plays when its image loads
+    - `AudioService` is created at app start, reuses one audio element, and unlocks it with a short silence on the first tap, so the sound that plays when the image loads (outside a tap) still plays on iOS Safari (see [Web](platforms/web.md#audio-playback))
+    - See [Progressive Disclosure](ux/progressive-disclosure.md) and [Audio](content/audio.md)
+    - _Requirements: 2, 7_
   - [x] 9.2 Implement session logic
     - Each answer calls the confidence engine, updates the store, and advances to the next word
     - Sessions are **continuous**: words cycle through the category until the parent or child taps the faint back button
@@ -171,6 +178,8 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
     - The session advances without any extra tap
     - The back button returns to the home screen
     - Pinyin appears automatically for a word with no audio when both text settings are off
+    - The word plays once when the image loads or fails, after the 1.5 second wait at most, on every press, and for the next card when its image loads
+    - `AudioService` reuses one element and plays the unlock silence once
     - _Requirements: 2, 3, 5_
 
 - [x] 10. Listen and tap mode

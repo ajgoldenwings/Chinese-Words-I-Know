@@ -48,7 +48,10 @@ Assets are served from the build output with relative paths, prefixed by `enviro
 ## Audio playback
 
 - Uses the native `HTMLAudioElement`. No third-party library
-- Browsers block audio until the user has interacted with the page. The first tap on Start Now or a category button unlocks playback. If a `play()` call is still rejected, `AudioService` resolves silently and the next tap tries again
+- Browsers block audio until the user has interacted with the page. iOS Safari is stricter: it only lets an audio element play outside a tap if that same element has already played from a tap
+- `AudioService` therefore reuses **one** `HTMLAudioElement` for every sound and changes its `src`. It never creates a new element per sound
+- `AudioService` is created when the app starts (an app initializer), so it is listening before the first tap. The first tap or key press anywhere in the app plays a tenth of a second of silence on that element. This unlocks it, so sounds that start outside a tap (the flashcard word that plays when the card's image loads) are allowed
+- If a `play()` call is still rejected, `AudioService` resolves silently and the next tap tries again
 
 ## Offline (PWA)
 

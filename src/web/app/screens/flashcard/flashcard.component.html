@@ -10,11 +10,11 @@
     <button
       type="button"
       class="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 p-4"
-      [attr.aria-label]="revealed() ? w.english : 'Tap to hear ' + w.english"
-      (click)="reveal()"
+      [attr.aria-label]="'Tap to hear ' + w.english"
+      (click)="onCardPress()"
     >
       @if (imageUrl(); as url) {
-        <img [src]="url" [alt]="w.english" class="min-h-0 w-full flex-1 object-contain" (error)="onImageError()" />
+        <img [src]="url" [alt]="w.english" class="min-h-0 w-full flex-1 object-contain" (load)="onImageLoad()" (error)="onImageError()" />
       } @else {
         <span class="flex min-h-0 flex-1 items-center justify-center text-[10rem] leading-none" aria-hidden="true">{{ emoji() }}</span>
       }

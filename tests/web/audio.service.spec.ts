@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
 import { AppStore, APP_STORAGE, MemoryStorage } from '@shared/store';
 import { environment } from '../../src/web/environments/environment';
-import { AUDIO_ELEMENT_FACTORY, AudioService } from '../../src/web/app/services/audio.service';
+import { AUDIO_ELEMENT_FACTORY, AudioService, SILENT_WAV } from '../../src/web/app/services/audio.service';
 
 function setup(play: () => Promise<void> = () => Promise.resolve()) {
   const sources: string[] = [];
@@ -12,9 +12,17 @@ function setup(play: () => Promise<void> = () => Promise.resolve()) {
       { provide: APP_STORAGE, useValue: new MemoryStorage() },
       {
         provide: AUDIO_ELEMENT_FACTORY,
+        // One element is reused, so record the source each time it plays.
         useValue: (src: string) => {
-          sources.push(src);
-          return { play, pause: () => undefined } as unknown as HTMLAudioElement;
+          const el = {
+            src,
+            play: () => {
+              if (!el.src.startsWith('data:')) sources.push(el.src);
+              return play();
+            },
+            pause: () => undefined,
+          };
+          return el as unknown as HTMLAudioElement;
         },
       },
     ],
@@ -65,5 +73,42 @@ describe('AudioService', () => {
       throw new Error('boom');
     });
     await expect(service.play('mao', 'slow')).resolves.toBeUndefined();
+  });
+  function single(onPlay: (src: string) => void) {
+    let created = 0;
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: APP_STORAGE, useValue: new MemoryStorage() },
+        {
+          provide: AUDIO_ELEMENT_FACTORY,
+          useValue: (src: string) => {
+            created++;
+            const el = { src, play: () => (onPlay(el.src), Promise.resolve()), pause: () => undefined };
+            return el as unknown as HTMLAudioElement;
+          },
+        },
+      ],
+    });
+    return { service: TestBed.inject(AudioService), created: () => created };
+  }
+  it('reuses one element for every sound', async () => {
+    const { service, created } = single(() => undefined);
+    await service.play('mao', 'natural');
+    await service.play('mao', 'slow');
+    expect(created()).toBe(1);
+  });
+  it('the first tap plays a silence on that element to unlock later sounds', async () => {
+    const played: string[] = [];
+    const { service, created } = single((src) => played.push(src));
+    document.dispatchEvent(new Event('pointerdown'));
+    document.dispatchEvent(new Event('pointerdown'));
+    expect(played).toEqual([SILENT_WAV]);
+    await service.play('mao', 'slow');
+    expect(played).toEqual([SILENT_WAV, 'assets/audio/words/mao/mao-slow.mp3']);
+    expect(created()).toBe(1);
+  });
+  it('the silence is a valid WAV data URI', () => {
+    expect(SILENT_WAV.startsWith('data:audio/wav;base64,UklGR')).toBe(true);
   });
 });
