@@ -34,6 +34,7 @@ Detailed specs live in the folders below. This document holds the core entities,
 | [Audio](content/audio.md) | Format, naming, `AudioService`, native speaker recording guide |
 | [Images](content/images.md) | Format, naming, `ImageService`, style and sourcing |
 | [Word Lists](content/word-lists.md) | Recording and illustration checklists for every word |
+| [Logo](content/logo.md) | App logo, favicon, icons, boot image, and launch screen: sizes, formats, and where each is used |
 | [Asset Hosting](content/asset-hosting.md) | GitHub Pages now, S3 + CloudFront later |
 
 ### Cloud
@@ -175,7 +176,7 @@ chinese-words-i-know/
 │           ├── tasks.md              # Implementation plan
 │           ├── core/                 # confidence-model, learn-next-algorithm, content-versioning
 │           ├── ux/                   # accessibility, progressive-disclosure, first-run, error-handling
-│           ├── content/              # audio, images, word-lists, asset-hosting
+│           ├── content/              # audio, images, logo, word-lists, asset-hosting
 │           ├── cloud/                # sync, infrastructure, ci-cd
 │           ├── platforms/            # web, ios, android
 │           └── roadmap/              # future-features
@@ -190,7 +191,8 @@ chinese-words-i-know/
 │       ├── words/                    # One image per word, named by word ID slug
 │       │   ├── mao.png
 │       │   └── ...
-│       └── categories/               # One cover image per category
+│       ├── categories/               # One cover image per category
+│       └── logo/                     # The logo and every generated size (favicon, icons, boot image, splash)
 ├── infra/                            # AWS CDK infrastructure (TypeScript)
 │   ├── bin/
 │   │   └── app.ts
@@ -213,6 +215,7 @@ chinese-words-i-know/
 │   │   ├── sync/                     # SyncService, device-agnostic cloud sync
 │   │   └── store/                    # State management
 │   ├── web/                          # Web app target (Angular)
+│   │   ├── public/                   # manifest.webmanifest (copied to the site root)
 │   │   ├── app/
 │   │   │   ├── components/
 │   │   │   └── screens/
@@ -228,6 +231,8 @@ chinese-words-i-know/
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml                # CI/CD pipeline
+├── scripts/
+│   └── logo/gen.py               # Generates every logo size from the source image
 └── package.json
 ```
 

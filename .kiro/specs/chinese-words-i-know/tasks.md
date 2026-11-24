@@ -360,6 +360,21 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
   - [x] 20.4 Write tests
     - Status, error, and refresh cases in the sync tests; skipped batch; the Lambda accepts an empty `lastSeenAt`; settings and account tests updated for the button
     - _Requirements: 13_
+- [x] 21. Apply the logo
+  - Use the supplied logo as the favicon, app icon, boot image, and launch screen source. See [Logo](content/logo.md)
+  - Demo: the browser tab shows the logo, the logo shows while the app loads, and the installed web app uses the logo as its icon
+  - [x] 21.1 Store and generate the logo files
+    - Put the supplied image at `assets/images/logo/logo-source.png`
+    - Add `scripts/logo/gen.py` and generate the sizes and formats listed in [Logo](content/logo.md)
+    - _Requirements: 11_
+  - [x] 21.2 Wire the logo into the web app
+    - Add the favicon, touch icon, theme color, and manifest links to `index.html`, add `manifest.webmanifest` to `src/web/public/`, and put the boot image inside `<app-root>`
+    - Remove the default `favicon.ico` from `src/web/public/`
+    - Precache the logo files and the manifest in `ngsw-config.json`
+    - _Requirements: 11_
+  - [x] 21.3 Write tests
+    - The generated files exist with the sizes in the logo spec, the apple touch icon is opaque, and the manifest and `index.html` reference only files that exist, with relative paths
+    - _Requirements: 11_
 ## Notes
 
 - The design has no Correctness Properties section, so this plan uses unit and integration tests only and no property-based tests
@@ -392,7 +407,9 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
     { "id": 18, "tasks": ["19"] },
     { "id": 19, "tasks": ["20.1"] },
     { "id": 20, "tasks": ["20.2", "20.4"] },
-    { "id": 21, "tasks": ["20.3"] }
+    { "id": 21, "tasks": ["20.3", "21.1"] },
+    { "id": 22, "tasks": ["21.2"] },
+    { "id": 23, "tasks": ["21.3"] }
   ]
 }
 ```

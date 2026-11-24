@@ -38,6 +38,13 @@ Assets are served from the build output with relative paths, prefixed by `enviro
 
 `AudioService` and `ImageService` build these paths at runtime. See [Audio](../content/audio.md) and [Images](../content/images.md).
 
+## Logo, favicon, and boot image
+- The logo files live in `assets/images/logo/` and are served at `assets/images/logo/...` like every other asset. See [Logo](../content/logo.md)
+- `src/web/index.html` links the favicon (`.ico` and PNG), the Apple touch icon, the web app manifest, and a theme color. All links are relative
+- `src/web/public/manifest.webmanifest` sets the app name, `start_url` and `scope` of `./`, `display: standalone`, the theme and background colors, and the icons. Its paths are relative, so it works under the `/<repo>/` subpath
+- The boot image is inside `<app-root>` in `index.html`. It shows while the app loads, and Angular replaces it on start
+- The web build has no `favicon.ico` in `src/web/public/`. The logo folder is the only source for icons
+
 ## Audio playback
 
 - Uses the native `HTMLAudioElement`. No third-party library
@@ -47,7 +54,7 @@ Assets are served from the build output with relative paths, prefixed by `enviro
 
 The app registers an Angular service worker so it keeps working without a connection after the first load.
 
-- The app shell (HTML, JS, CSS) is precached
+- The app shell (HTML, JS, CSS, the manifest) and the logo files in `assets/images/logo/` are precached
 - Images and audio are cached at runtime on first use (cache-first). They are not precached, because the full set is about 310 MB
 - The very first load needs a connection
 - A new app version activates on the next launch

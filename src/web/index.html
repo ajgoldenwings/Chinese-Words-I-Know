@@ -5,9 +5,19 @@
   <title>Chinese Words I Know</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta name="theme-color" content="#c87f51">
+  <link rel="icon" type="image/x-icon" href="assets/images/logo/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/logo/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/images/logo/favicon-16.png">
+  <link rel="apple-touch-icon" href="assets/images/logo/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
 </head>
 <body>
-  <app-root></app-root>
+  <!-- The logo shows while the app loads. Angular replaces it when it starts. -->
+  <app-root>
+    <div style="display:flex;height:100dvh;align-items:center;justify-content:center;background:#fff">
+      <img src="assets/images/logo/boot.png" alt="Chinese Words I Know" width="120" height="120">
+    </div>
+  </app-root>
 </body>
 </html>

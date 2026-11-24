@@ -3,6 +3,8 @@
 ← [Design](../design.md)
 
 ## Overview
+The app logo is separate from word images. See [Logo](logo.md).
+
 
 Each word requires one illustration displayed full-screen during flashcard and listen + tap sessions. Images must be immediately recognizable to a 3-year-old without any supporting text — the image alone should convey the concept.
 

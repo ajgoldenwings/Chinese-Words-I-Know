@@ -21,7 +21,7 @@ import { ImageService } from '../../src/web/app/services/image.service';
 import { FlashcardComponent } from '../../src/web/app/screens/flashcard/flashcard.component';
 import swConfig from '../../ngsw-config.json';
 
-const files = ['/index.html', '/favicon.ico', '/main-ABC.js', '/styles-ABC.css'];
+const files = ['/index.html', '/manifest.webmanifest', '/main-ABC.js', '/styles-ABC.css'];
 async function generate(baseHref: string) {
   const fs = {
     list: async () => files,
@@ -45,8 +45,8 @@ describe('service worker config (app shell and runtime media cache)', () => {
       expect(shell.installMode).toBe('prefetch');
       expect(shell.urls).toContain(`${base}index.html`);
       expect(shell.urls).toContain(`${base}main-ABC.js`);
-      // No precaching of the large media set.
-      expect(out.assetGroups.map((g) => g.name)).toEqual(['app-shell']);
+      // Only the app shell and the small logo folder are precached, never the large media set.
+      expect(out.assetGroups.map((g) => g.name)).toEqual(['app-shell', 'logo']);
 
       const media = out.dataGroups.find((g) => g.name === 'media')!;
       expect(media.strategy).toBe('performance'); // cache-first

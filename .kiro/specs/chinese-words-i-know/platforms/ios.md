@@ -13,6 +13,9 @@ Future. Placeholder until iOS work begins. The architecture is designed so `src/
 - Assets are bundled into the app package until they move to S3 + CloudFront (see [Asset Hosting](../content/asset-hosting.md)).
 - iOS-specific code and config live in `src/ios/`.
 
+## Icon and launch screen
+The iOS app icon and launch screen are generated from the project logo (`icon-512.png` and `splash.png` in `assets/images/logo/`). See [Logo](../content/logo.md). Platform-specific icon sizes are produced from those two files when the iOS target is added, not hand-drawn.
+
 ## Asset URL scheme
 
 Assets are referenced by relative path (`assets/...`, see [Audio](../content/audio.md)), so the WebView resolves them against Capacitor's local origin and no per-platform URL logic is needed. For reference, that origin is `capacitor://localhost` on iOS.

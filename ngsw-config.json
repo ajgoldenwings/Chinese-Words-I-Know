@@ -8,11 +8,21 @@
       "updateMode": "prefetch",
       "resources": {
         "files": [
-          "/favicon.ico",
+          "/manifest.webmanifest",
           "/index.csr.html",
           "/index.html",
           "/*.css",
           "/*.js"
+        ]
+      }
+    },
+    {
+      "name": "logo",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/images/logo/**"
         ]
       }
     }

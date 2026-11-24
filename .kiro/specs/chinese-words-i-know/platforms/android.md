@@ -13,6 +13,9 @@ Future. Placeholder until Android work begins. The architecture is designed so `
 - Assets are bundled into the app package until they move to S3 + CloudFront (see [Asset Hosting](../content/asset-hosting.md)).
 - Android-specific code and config live in `src/android/`.
 
+## Icon and launch screen
+The Android app icon and launch screen are generated from the project logo (`icon-512.png` and `splash.png` in `assets/images/logo/`). See [Logo](../content/logo.md). Platform-specific icon sizes are produced from those two files when the Android target is added, not hand-drawn.
+
 ## Asset URL scheme
 
 Assets are referenced by relative path (`assets/...`, see [Audio](../content/audio.md)), so the WebView resolves them against Capacitor's local origin and no per-platform URL logic is needed. For reference, the Android origin is `http://localhost` or `https://localhost`, depending on the Capacitor version and the `server.androidScheme` setting. Because the paths are relative, the choice does not affect asset loading.
