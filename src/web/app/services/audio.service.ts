@@ -1,5 +1,4 @@
 import { Injectable, InjectionToken, inject } from '@angular/core';
-import { AppStore } from '@shared/store';
 import { environment } from '../../environments/environment';
 
 export type AudioSpeed = 'natural' | 'slow';
@@ -45,8 +44,8 @@ export const SILENT_WAV = (() => {
 })();
 /**
  * Plays pre-recorded word audio. Components pass a slug and never build paths.
- * `play()` never rejects: a null slug, audio turned off, a missing file, or
- * a browser that blocks playback all resolve silently (see content/audio.md).
+ * `play()` never rejects: a null slug, a missing file, or a browser that blocks playback
+ * all resolve silently (see content/audio.md). Screens check their own audio setting first.
  *
  * One audio element is reused for every sound. iOS Safari and some other browsers only
  * allow `play()` outside a tap on an element that has already played from a tap. The first
@@ -55,7 +54,6 @@ export const SILENT_WAV = (() => {
  */
 @Injectable({ providedIn: 'root' })
 export class AudioService {
-  private readonly store = inject(AppStore);
   private readonly createElement = inject(AUDIO_ELEMENT_FACTORY);
   private element: HTMLAudioElement | null = null;
   private unlocked = false;
@@ -87,7 +85,8 @@ export class AudioService {
   }
   async play(slug: string | null | undefined, speed: AudioSpeed): Promise<void> {
     try {
-      if (!slug || !this.store.settings().audioEnabled) {
+      // Whether a mode plays sound is that screen's choice (flashcardAudio); this only plays.
+      if (!slug) {
         return;
       }
       this.stop();

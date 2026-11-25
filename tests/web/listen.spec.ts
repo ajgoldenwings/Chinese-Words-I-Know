@@ -92,16 +92,15 @@ describe('ListenComponent', () => {
     expect(play).not.toHaveBeenCalled();
   });
 
-  it('plays audio instead of the prompt when a recording exists, and shows the prompt when audio is off', () => {
+  it('plays audio instead of the prompt when a recording exists, whatever the Flashcard Audio setting', () => {
     const { el, store, fixture, tile, click, play } = setup();
+    store.updateSettings({ flashcardAudio: false });
+    fixture.detectChanges();
     click(tile('w0'));
     // w0 is now at 0.05, so w1 (score 0, has audio) is the next target.
     click(el.querySelector<HTMLElement>('[data-testid="next"]')!);
     expect(play).toHaveBeenCalledWith('w1', 'slow');
     expect(el.querySelector('[data-testid="prompt"]')).toBeNull();
-    store.updateSettings({ audioEnabled: false });
-    fixture.detectChanges();
-    expect(el.querySelector('[data-testid="prompt"]')?.textContent?.trim()).toBe('en-w1');
   });
 
   it('plays the pressed word on every press of a wrong tile, including a repeat', () => {
@@ -134,6 +133,87 @@ describe('ListenComponent', () => {
     expect(play).toHaveBeenCalledWith(null, 'slow');
     click(tiles().find((t) => t.dataset['wordId'] !== 'w0')!); // disabled once solved
     expect(play).toHaveBeenCalledTimes(1);
+  });
+  describe('Listen + Tap settings', () => {
+    const text = (tileEl: HTMLElement, id: string) => tileEl.querySelector(`[data-testid="${id}"]`)?.textContent?.trim();
+    /** Solves round 1 (target w0, no recording), so w1 (the only word with a recording) is the target. */
+    function w1Round(imaged = 4) {
+      const ctx = setup(imaged);
+      ctx.click(ctx.tile('w0'));
+      ctx.click(ctx.el.querySelector<HTMLElement>('[data-testid="next"]')!);
+      return ctx;
+    }
+    it('Show Characters shows characters under every picture before any tap', () => {
+      const { store, fixture, tiles } = setup();
+      store.updateSettings({ listenShowCharacters: true });
+      fixture.detectChanges();
+      for (const t of tiles()) expect(text(t, 'tile-characters')).toBe(t.dataset['wordId']);
+    });
+    it('Show Pinyin shows pinyin under a picture only after it is tapped, right or wrong', () => {
+      const { store, fixture, tiles, tile, click } = setup(4);
+      store.updateSettings({ listenShowPinyin: true });
+      fixture.detectChanges();
+      expect(tiles().some((t) => text(t, 'tile-pinyin'))).toBe(false);
+      const wrong = tiles().find((t) => t.dataset['wordId'] !== 'w0')!;
+      click(wrong);
+      expect(text(wrong, 'tile-pinyin')).toBe(wrong.dataset['wordId']);
+      expect(text(tile('w0'), 'tile-pinyin')).toBeUndefined();
+      click(tile('w0'));
+      expect(text(tile('w0'), 'tile-pinyin')).toBe('w0');
+      expect(tiles().filter((t) => text(t, 'tile-pinyin')).length).toBe(2); // untapped tiles stay without
+    });
+    it('the next round starts with no pinyin showing', () => {
+      const { store, tiles } = w1Round();
+      store.updateSettings({ listenShowPinyin: true });
+      expect(tiles().some((t) => text(t, 'tile-pinyin'))).toBe(false);
+    });
+    it('pinyin fallback: with both text settings off, a word with no recording shows pinyin after its tap', () => {
+      const { tile, tiles, click } = setup(4);
+      // Default settings: both off. w1 has a recording, the others do not.
+      const silent = tiles().find((t) => !['w0', 'w1'].includes(t.dataset['wordId']!))!;
+      click(silent);
+      expect(text(silent, 'tile-pinyin')).toBe(silent.dataset['wordId']);
+      click(tile('w1'));
+      expect(text(tile('w1'), 'tile-pinyin')).toBeUndefined();
+    });
+    it('a wrong picture fades, but its text does not', () => {
+      const { store, fixture, tiles, click } = setup(4);
+      store.updateSettings({ listenShowCharacters: true, listenShowPinyin: true });
+      fixture.detectChanges();
+      const wrong = tiles().find((t) => t.dataset['wordId'] !== 'w0')!;
+      click(wrong);
+      expect(wrong.classList.contains('opacity-50')).toBe(false);
+      expect(wrong.querySelector('img, span[aria-hidden="true"]')!.classList.contains('opacity-50')).toBe(true);
+    });
+    it('the repeat button shows by default when the target has a recording, and plays it again', () => {
+      const { el, play } = w1Round();
+      const repeat = el.querySelector<HTMLElement>('[data-testid="repeat"]')!;
+      expect(repeat).not.toBeNull();
+      expect(repeat.getAttribute('aria-label')).toBe('Hear the word again');
+      play.mockClear();
+      repeat.click();
+      repeat.click();
+      expect(play).toHaveBeenCalledTimes(2);
+      expect(play).toHaveBeenLastCalledWith('w1', 'slow');
+    });
+    it('the repeat button is hidden when the setting is off, or when the target has no recording', () => {
+      const first = setup(4); // target w0 has no recording
+      expect(first.el.querySelector('[data-testid="repeat"]')).toBeNull();
+      const { el, store, fixture, play } = w1Round();
+      store.updateSettings({ listenRepeatButton: false });
+      fixture.detectChanges();
+      expect(el.querySelector('[data-testid="repeat"]')).toBeNull();
+      // The word still plays on its own: the setting only adds the button.
+      expect(play).toHaveBeenCalledWith('w1', 'slow');
+    });
+    it('the repeat button is medium sized and at the bottom, below the pictures', () => {
+      const { el } = w1Round();
+      const repeat = el.querySelector<HTMLElement>('[data-testid="repeat"]')!;
+      expect(repeat.className).toContain('min-h-14');
+      expect(repeat.className).not.toContain('opacity-');
+      const grid = el.querySelector('[data-testid="tile"]')!.parentElement!;
+      expect(grid.compareDocumentPosition(repeat) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
   });
   it('redirects home when no category has 4 imaged words', () => {
     const { navigate, tiles } = setup(3);

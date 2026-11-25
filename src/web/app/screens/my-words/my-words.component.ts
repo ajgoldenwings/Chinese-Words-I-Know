@@ -5,7 +5,6 @@ import { loadContent } from '@shared/content';
 import type { UserWordState, Word } from '@shared/entities';
 import { buildWordLists } from '@shared/lists';
 import { activeWordStates, AppStore } from '@shared/store';
-import { getWordDisplay } from '@shared/session';
 import { ImageService } from '../../services/image.service';
 import { LongPressDirective } from './long-press.directive';
 
@@ -48,10 +47,6 @@ export class MyWordsComponent {
   protected readonly selected = signal<Word | null>(null);
   protected readonly menuOpen = signal(false);
 
-  protected readonly display = computed(() => {
-    const w = this.selected();
-    return w ? getWordDisplay(w, this.store.settings()) : null;
-  });
   protected readonly selectedStatus = computed(() => {
     const w = this.selected();
     if (!w) return '';

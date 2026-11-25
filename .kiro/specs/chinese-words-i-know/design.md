@@ -132,9 +132,13 @@ UserWordState                      // keyed by Word.id (wordId)
   syncStatus: "synced" | "pending" // local only — never persisted to DynamoDB
 
 UserSettings                       // stored locally at all times, independent of sign-in; not synced in this version
-  showPinyin: boolean         // default false — shows pinyin romanization under each word
-  showCharacters: boolean     // default false — shows simplified Chinese characters
-  audioEnabled: boolean       // default true — plays pre-recorded audio on every flashcard press and in listen + tap mode
+  // Learning settings, by session type. See Progressive Disclosure for the panel pages and behavior.
+  flashcardShowPinyin: boolean      // default false — pinyin under the word, after the card is tapped
+  flashcardShowCharacters: boolean  // default false — simplified characters with the image, always
+  flashcardAudio: boolean           // default true — natural recording on every card tap
+  listenShowPinyin: boolean         // default false — pinyin under a picture after it is tapped, right or wrong
+  listenShowCharacters: boolean     // default false — simplified characters under every picture, always
+  listenRepeatButton: boolean       // default true — shows the Repeat button; Listen + Tap sound plays either way
   cloudSyncEnabled: boolean   // default false — set true by signing in, false by logging out; enables DynamoDB sync. Shown as a Save to Cloud / Logout button, not a toggle
   // Additional boolean flags are added here as new features are introduced
 

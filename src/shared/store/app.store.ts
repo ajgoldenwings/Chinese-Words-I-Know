@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { patchState, signalStore, watchState, withHooks, withMethods, withState } from '@ngrx/signals';
 import { normalizeScore } from '../confidence';
-import { DEFAULT_USER_SETTINGS } from '../entities';
+import { DEFAULT_USER_SETTINGS, LEGACY_SETTING_KEYS } from '../entities';
 import type { UserSettings, UserWordState } from '../entities';
 import { migrateContent, type MigrationContent, type MigrationResult } from './migration';
 import { APP_STORAGE, STORE_STORAGE_KEY } from './storage';
@@ -61,8 +61,17 @@ export function parsePersistedState(raw: string | null): AppState {
     }
     const settings: UserSettings = { ...DEFAULT_USER_SETTINGS };
     if (isRecord(parsed['settings'])) {
+      const saved = parsed['settings'];
+      // Settings saved before the split by session type carry over to every flag that replaces them.
+      for (const [legacy, targets] of Object.entries(LEGACY_SETTING_KEYS)) {
+        const v = saved[legacy];
+        if (typeof v === 'boolean') {
+          for (const key of targets) settings[key] = v;
+        }
+      }
+      // A flag saved under its current name always wins over a legacy value.
       for (const key of Object.keys(DEFAULT_USER_SETTINGS) as (keyof UserSettings)[]) {
-        const v = parsed['settings'][key];
+        const v = saved[key];
         if (typeof v === 'boolean') {
           settings[key] = v;
         }

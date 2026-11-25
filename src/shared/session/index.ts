@@ -1,5 +1,5 @@
-export { getWordDisplay, orderWordsForSession } from './session';
-export type { WordDisplay } from './session';
+export { flashcardDisplaySettings, getWordDisplay, listenDisplaySettings, orderWordsForSession } from './session';
+export type { DisplaySettings, WordDisplay } from './session';
 export {
   LISTEN_TILE_COUNT,
   buildListenTiles,

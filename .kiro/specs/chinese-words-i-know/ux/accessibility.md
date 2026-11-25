@@ -6,7 +6,8 @@ These rules apply globally across all screens and both platforms (web and Capaci
 
 ## Touch targets
 - Every interactive element must meet a minimum hit area of **44 × 44 pt** (CSS pixels on web; logical pixels on iOS/Android)
-- This applies to the faint back button, the settings icon, and all card/tile/button elements — even when visually small
+- This applies to the faint back button, the settings icon, the settings back arrow, and all card/tile/button elements — even when visually small
+- The Listen + Tap Repeat button is deliberately larger, at least 56pt high, and fully visible, because a child uses it
 
 ## Color and contrast
 - Text over any background must meet **WCAG AA contrast ratio** (4.5:1 for normal text, 3:1 for large text ≥ 18pt)
@@ -26,7 +27,7 @@ The app follows the device's theme. There is no toggle in the app, and the theme
 
 ## Audio is not required
 - The app must be fully usable with audio off (the parent can turn it off in settings, and words without a recording have no audio)
-- During listen + tap mode with no audio, the English word is shown as the prompt — the interaction does not break
+- During listen + tap mode, when the round's word has no recording, the English word is shown as the prompt and the Repeat button is hidden — the interaction does not break
 
 ## No time pressure
 - No session element should time out or auto-advance

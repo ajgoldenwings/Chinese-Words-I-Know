@@ -410,6 +410,32 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
   - [x] 22.3 Write tests
     - No theme toggle or setting exists, the theme follows `prefers-color-scheme` only, every light color class in a template has a `dark:` partner, and `index.html` declares `color-scheme`
     - _Requirements: 14_
+- [x] 23. Learning settings by session type
+  - Replace the shared Show Pinyin, Show Characters and Audio switches with Learning Settings, split into Flashcard Settings and Listen + Tap Settings. See [Progressive Disclosure](ux/progressive-disclosure.md)
+  - Demo: open Settings → Learning Settings → Flashcard Settings, turn on Show Pinyin; on a flashcard the pinyin appears only after the tap. In Listen + Tap Settings turn on Show Characters; every picture shows its characters, and the Repeat button at the bottom plays the word again
+  - [x] 23.1 Split the settings flags
+    - Replace `showPinyin`, `showCharacters` and `audioEnabled` with `flashcardShowPinyin`, `flashcardShowCharacters`, `flashcardAudio`, `listenShowPinyin`, `listenShowCharacters` and `listenRepeatButton`
+    - Carry saved old values over once when stored state loads (`LEGACY_SETTING_KEYS`); a value saved under a new name wins
+    - `AudioService` reads no setting; each screen checks its own
+    - No cloud or infrastructure change: settings stay on the device and are not synced
+    - _Requirements: 3, 7, 10_
+  - [x] 23.2 Rework the settings panel into drill-down pages
+    - Settings → Learning Settings → Flashcard Settings or Listen + Tap Settings, with a back arrow and the close button on every page; the panel always opens on the first page; Save to Cloud stays on the first page
+    - Wording as in the Flags table
+    - _Requirements: 10_
+  - [x] 23.3 Apply the flashcard settings
+    - Characters always show with the image; pinyin only after the card is tapped, with its space kept so the image does not move; audio plays on a tap only when `flashcardAudio` is on
+    - _Requirements: 3, 7_
+  - [x] 23.4 Apply the Listen + Tap settings
+    - Characters under every picture; pinyin under a picture after it is tapped, right or wrong, cleared each round; a wrong picture fades but its text does not
+    - A medium-sized Repeat button at the bottom when `listenRepeatButton` is on and the word has a recording; the word's sound still plays on its own when the setting is off
+    - _Requirements: 2, 3, 7, 9_
+  - [x] 23.5 My Words detail
+    - Always pinyin, never characters, whatever the learning settings
+    - _Requirements: 6_
+  - [x] 23.6 Write tests
+    - Panel pages, back and reopen, wording, each switch persists across reload, defaults, carrying old settings over, flashcard pinyin after the tap and characters before it, Flashcard Audio off, Listen + Tap characters, pinyin after a tap, fallback, faded picture, Repeat button shown, hidden and playing, and the My Words detail
+    - _Requirements: 3, 6, 7, 10_
 ## Notes
 
 - The design has no Correctness Properties section, so this plan uses unit and integration tests only and no property-based tests
@@ -446,7 +472,9 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
     { "id": 22, "tasks": ["21.2"] },
     { "id": 23, "tasks": ["21.3", "22.1"] },
     { "id": 24, "tasks": ["22.2"] },
-    { "id": 25, "tasks": ["22.3"] }
+    { "id": 25, "tasks": ["22.3", "23.1"] },
+    { "id": 26, "tasks": ["23.2", "23.3", "23.4", "23.5"] },
+    { "id": 27, "tasks": ["23.6"] }
   ]
 }
 ```

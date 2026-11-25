@@ -92,12 +92,45 @@ describe('FlashcardComponent session', () => {
     expect(TestBed.inject(Router).url).toBe('/');
   });
 
-  it('shows pinyin automatically for a word with no audio when both text settings are off', async () => {
-    const { el, store, harness } = await setup();
-    store.updateSettings({ showPinyin: false, showCharacters: false, audioEnabled: false });
+  it('shows pinyin automatically, after the tap, when Flashcard Audio and both text settings are off', async () => {
+    const { el, store, harness, tap } = await setup();
+    store.updateSettings({ flashcardShowPinyin: false, flashcardShowCharacters: false, flashcardAudio: false });
     harness.detectChanges();
-    expect(el.querySelector('.pinyin')?.textContent?.trim()).toBe(words[0].pinyin);
+    const pinyin = () => el.querySelector('.pinyin') as HTMLElement | null;
+    expect(pinyin()?.classList.contains('invisible')).toBe(true);
+    tap('main > button');
+    expect(pinyin()?.classList.contains('invisible')).toBe(false);
+    expect(pinyin()?.textContent?.trim()).toBe(words[0].pinyin);
     expect(el.querySelector('.characters')).toBeNull();
+  });
+  it('Show Pinyin shows pinyin only after the card is tapped; space is kept so the image does not move', async () => {
+    const { el, store, harness, tap } = await setup();
+    store.updateSettings({ flashcardShowPinyin: true });
+    harness.detectChanges();
+    const pinyin = () => el.querySelector('.pinyin') as HTMLElement;
+    expect(pinyin().classList.contains('invisible')).toBe(true);
+    expect(pinyin().getAttribute('aria-hidden')).toBe('true');
+    tap('main > button');
+    expect(pinyin().classList.contains('invisible')).toBe(false);
+    expect(pinyin().getAttribute('aria-hidden')).toBe('false');
+    // The next card hides it again until tapped.
+    tap('.got-it');
+    expect(pinyin().classList.contains('invisible')).toBe(true);
+  });
+  it('Show Characters shows characters with the image before any tap', async () => {
+    const { el, store, harness } = await setup();
+    store.updateSettings({ flashcardShowCharacters: true });
+    harness.detectChanges();
+    expect(el.querySelector('.characters')?.textContent?.trim()).toBe(words[0].simplified);
+  });
+  it('ignores the Listen + Tap settings', async () => {
+    const { el, store, harness, tap } = await setup();
+    store.updateSettings({ listenShowPinyin: true, listenShowCharacters: true });
+    harness.detectChanges();
+    tap('main > button');
+    expect(el.querySelector('.characters')).toBeNull();
+    // Every animal has a recording, so there is no pinyin fallback either.
+    expect(el.querySelector('.pinyin')).toBeNull();
   });
 });
 describe('FlashcardComponent audio', () => {
@@ -144,6 +177,14 @@ describe('FlashcardComponent audio', () => {
     expect(play).toHaveBeenCalledTimes(3);
     for (const call of play.mock.calls) expect(call).toEqual([words[0].audioAsset, 'natural']);
     expect(el.querySelector('.got-it')).not.toBeNull();
+  });
+  it('plays nothing on a press when Flashcard Audio is off, and the card still reveals', async () => {
+    const { el, play, press } = await audioSetup();
+    TestBed.inject(AppStore).updateSettings({ flashcardAudio: false });
+    press();
+    expect(play).not.toHaveBeenCalled();
+    expect(el.querySelector('.got-it')).not.toBeNull();
+    expect((el.querySelector('main > button') as HTMLElement).getAttribute('aria-label')).toMatch(/^Tap to reveal /);
   });
   it('the next card stays silent until it is pressed', async () => {
     const { el, harness, play, press, fire } = await audioSetup();

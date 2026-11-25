@@ -4,7 +4,7 @@
 
 ## Overview
 
-All audio is pre-recorded by a native Mandarin speaker. No TTS is used in this version. Audio is enabled by default (`audioEnabled: true`) and can be turned off via the settings toggle. When enabled, every word that has a recording plays on every press of a flashcard and automatically in listen + tap mode. Words without a recording stay silent and the UI shows the English word instead. If pinyin and character display are both off, the word's pinyin is shown as a fallback so the learner still sees some Chinese (see [Progressive Disclosure](../ux/progressive-disclosure.md)).
+All audio is pre-recorded by a native Mandarin speaker. No TTS is used in this version. Each session type has its own audio setting (see [Progressive Disclosure](../ux/progressive-disclosure.md)). In flashcards, `flashcardAudio` (on by default) plays the word on every tap of the card. In Listen + Tap the sound always plays, because hearing the word is the game; its Audio setting, `listenRepeatButton` (on by default), only adds a Repeat button that plays the word again. Words without a recording stay silent and the UI shows the English word instead. If pinyin and character display are both off, the word's pinyin is shown as a fallback so the learner still sees some Chinese (see [Progressive Disclosure](../ux/progressive-disclosure.md)).
 
 Each word has two recordings:
 - **Natural** — spoken at a normal conversational pace; plays in flashcard mode on every press of the card
@@ -74,7 +74,7 @@ AudioService.play(slug: string, speed: 'natural' | 'slow'): Promise<void>
 ```
 
 - Plays through the native `HTMLAudioElement` on every platform. Capacitor's WebView supports it, so no native audio plugin is needed.
-- Respects `audioEnabled`: when it is false, `play()` resolves without playing.
+- Reads no setting. Each screen checks its own audio setting before calling `play()` (flashcards check `flashcardAudio`; Listen + Tap always plays).
 - Resolves immediately without error when the word's `audioAsset` is `null`, when the file fails to load, or when the browser rejects playback because the user has not interacted yet. The UI handles missing audio gracefully (no sound, no crash).
 - Browsers block audio until the first user tap. The first tap on Start Now or a category button unlocks playback.
 

@@ -53,6 +53,7 @@ Assets are served from the build output with relative paths, prefixed by `enviro
 - `AudioService` is created when the app starts (an app initializer), so it is listening before the first tap. The first tap or key press anywhere in the app plays a tenth of a second of silence on that element. This unlocks it, so sounds that start outside a tap (the Listen + Tap word that plays when a round starts after a screen change) are allowed
 - Replaying the recording already in the element rewinds it to `0` (`currentTime`) instead of setting `src` again. Setting `src` makes the browser reload and decode the file, which delays the sound by several hundred milliseconds in Safari
 - The flashcard card uses `touch-action: manipulation`, so mobile browsers never hold a tap back while checking for a double-tap zoom
+- `AudioService` reads no setting. Flashcards check `flashcardAudio` before playing; Listen + Tap always plays (its setting only shows the Repeat button)
 - If a `play()` call is still rejected, `AudioService` resolves silently and the next tap tries again
 
 ## Offline (PWA)

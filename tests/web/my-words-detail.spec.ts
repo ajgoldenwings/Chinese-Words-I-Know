@@ -33,6 +33,21 @@ describe('My Words detail view and manual override', () => {
     ).toBeTruthy();
   });
 
+  it('the detail view always shows pinyin and never characters, whatever the learning settings', () => {
+    for (const on of [false, true]) {
+      const { fixture, store, q, entry } = setup();
+      store.updateSettings({
+        flashcardShowPinyin: on,
+        flashcardShowCharacters: on,
+        listenShowPinyin: on,
+        listenShowCharacters: on,
+      });
+      entry().click();
+      fixture.detectChanges();
+      expect(q('[data-testid="detail"] .pinyin')?.textContent?.trim()).toBeTruthy();
+      expect(q('[data-testid="detail"] .characters')).toBeNull();
+    }
+  });
   it('visible buttons mark a word Known, then Unknown', () => {
     const { fixture, store, q, entry } = setup();
     entry().click();

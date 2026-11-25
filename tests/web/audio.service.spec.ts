@@ -41,12 +41,16 @@ describe('AudioService', () => {
     ]);
   });
 
-  it('does nothing when audio is disabled or the slug is null', async () => {
-    const { service, sources, store } = setup();
+  it('does nothing when the slug is null', async () => {
+    const { service, sources } = setup();
     await service.play(null, 'natural');
-    store.updateSettings({ audioEnabled: false });
-    await service.play('mao', 'natural');
     expect(sources).toEqual([]);
+  });
+  it('does not read any audio setting: each screen decides whether to play', async () => {
+    const { service, sources, store } = setup();
+    store.updateSettings({ flashcardAudio: false, listenRepeatButton: false });
+    await service.play('mao', 'slow');
+    expect(sources).toEqual(['assets/audio/words/mao/mao-slow.mp3']);
   });
 
   it('resolves when playback is rejected', async () => {

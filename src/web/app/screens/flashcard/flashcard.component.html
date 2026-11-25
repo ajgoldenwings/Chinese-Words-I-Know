@@ -10,7 +10,7 @@
     <button
       type="button"
       class="flex min-h-0 flex-1 touch-manipulation flex-col items-center justify-center gap-4 p-4"
-      [attr.aria-label]="'Tap to hear ' + w.english"
+      [attr.aria-label]="(audioOn() ? 'Tap to hear ' : 'Tap to reveal ') + w.english"
       (click)="onCardPress()"
     >
       @if (imageUrl(); as url) {
@@ -20,11 +20,13 @@
       }
       <span class="text-4xl font-semibold">{{ w.english }}</span>
       @if (display(); as d) {
-        @if (d.showPinyin) {
-          <span class="pinyin text-2xl text-slate-600 dark:text-slate-300">{{ w.pinyin }}</span>
-        }
         @if (d.showCharacters) {
+          <!-- Characters always show with the image. -->
           <span class="characters text-5xl">{{ w.simplified }}</span>
+        }
+        @if (d.showPinyin) {
+          <!-- Pinyin only after the card is tapped. Space is kept before then so the image never jumps. -->
+          <span class="pinyin text-2xl text-slate-600 dark:text-slate-300" [class.invisible]="!revealed()" [attr.aria-hidden]="!revealed()">{{ w.pinyin }}</span>
         }
       }
     </button>

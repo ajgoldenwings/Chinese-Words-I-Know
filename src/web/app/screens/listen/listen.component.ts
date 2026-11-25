@@ -9,6 +9,9 @@ import {
   imagedWordsInCategory,
   orderWordsForSession,
   selectListenCategory,
+  getWordDisplay,
+  listenDisplaySettings,
+  type WordDisplay,
 } from '@shared/session';
 import { AppStore } from '@shared/store';
 import { map } from 'rxjs';
@@ -53,10 +56,22 @@ export class ListenComponent {
   protected readonly solved = signal(false);
   private readonly failedImages = signal<ReadonlySet<string>>(new Set());
 
-  /** True when the target's recording will play, so the English word is not needed as the prompt. */
-  protected readonly hasAudioPrompt = computed(
-    () => !!this.target()?.audioAsset && this.store.settings().audioEnabled,
+  /** Tiles pressed this round, right or wrong. Their pinyin shows under the picture. */
+  protected readonly pressedIds = signal<ReadonlySet<string>>(new Set());
+  /**
+   * True when the target has a recording. Listen + Tap sound always plays, so the English word is
+   * only needed as the prompt when there is no recording.
+   */
+  protected readonly hasAudioPrompt = computed(() => !!this.target()?.audioAsset);
+  /** Listen + Tap Audio setting: a button that plays the word again. */
+  protected readonly showRepeat = computed(
+    () => this.store.settings().listenRepeatButton && this.hasAudioPrompt(),
   );
+  /** Listen + Tap settings for each tile's word, including the pinyin fallback. */
+  private readonly displays = computed(() => {
+    const settings = listenDisplaySettings(this.store.settings());
+    return new Map(this.tiles().map((w) => [w.id, getWordDisplay(w, settings)]));
+  });
 
   constructor() {
     effect(() => {
@@ -76,6 +91,18 @@ export class ListenComponent {
     return this.solved() && word.id === this.target()?.id;
   }
 
+  protected display(word: Word): WordDisplay {
+    return this.displays().get(word.id) ?? { showPinyin: false, showCharacters: false };
+  }
+  /** Pinyin shows under a picture only after that picture has been tapped. */
+  protected showTilePinyin(word: Word): boolean {
+    return this.display(word).showPinyin && this.pressedIds().has(word.id);
+  }
+  /** Plays the round's word again. Shown only when the Listen + Tap Audio setting is on. */
+  protected repeat(): void {
+    const t = this.target();
+    if (t) void this.audio.play(t.audioAsset, 'slow');
+  }
   protected tileImageUrl(word: Word): string | null {
     return this.failedImages().has(word.id) ? null : this.images.wordImageUrl(word.imageAsset);
   }
@@ -90,6 +117,7 @@ export class ListenComponent {
     if (!t || this.solved()) return;
     // Every press says the word for the picture that was pressed, including a repeat press on a wrong tile.
     void this.audio.play(word.audioAsset, 'slow');
+    this.pressedIds.update((s) => (s.has(word.id) ? s : new Set(s).add(word.id)));
     if (this.wrongIds().has(word.id)) return;
     const state = this.store.getWordState(t.id);
     if (word.id === t.id) {
@@ -109,6 +137,7 @@ export class ListenComponent {
   protected startRound(previousId?: string): void {
     this.solved.set(false);
     this.wrongIds.set(new Set());
+    this.pressedIds.set(new Set());
     const id = this.categoryId();
     this.failedImages.set(new Set());
     if (!id) {

@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
 import type { UserSettings } from '@shared/entities';
 import { AppStore } from '@shared/store';
@@ -6,27 +7,64 @@ import { AuthService } from '../../services/auth.service';
 import { SyncStatusService } from '../../services/sync-status.service';
 import { AccountPanelComponent } from '../account/account-panel.component';
 
-type BooleanFlag = 'showPinyin' | 'showCharacters' | 'audioEnabled';
-
+/** A learning setting shown as a switch. Cloud sync is a button, not a switch. */
+type LearningFlag = Exclude<keyof UserSettings, 'cloudSyncEnabled'>;
 interface SettingRow {
-  readonly key: BooleanFlag;
+  readonly key: LearningFlag;
   readonly label: string;
   readonly description: string;
 }
-
-/** Rows render in the order defined in ux/progressive-disclosure.md. */
-export const SETTING_ROWS: readonly SettingRow[] = [
-  { key: 'showPinyin', label: 'Show Pinyin', description: 'Show how each word is pronounced, in letters, under the picture.' },
-  { key: 'showCharacters', label: 'Show Characters', description: 'Show the Chinese characters for each word under the picture.' },
-  { key: 'audioEnabled', label: 'Audio', description: 'Play a recording of each word when a card is turned over.' },
-];
+/** The pages of the panel. Settings → Learning Settings → Flashcard or Listen + Tap. */
+export type SettingsPage = 'main' | 'learning' | 'flashcard' | 'listen';
+interface SubmenuPage {
+  readonly title: string;
+  /** One line on the Learning Settings page, under the link to this page. */
+  readonly summary: string;
+  readonly rows: readonly SettingRow[];
+}
+/** Learning settings by session type, in the order defined in ux/progressive-disclosure.md. */
+export const LEARNING_PAGES: Readonly<Record<'flashcard' | 'listen', SubmenuPage>> = {
+  flashcard: {
+    title: 'Flashcard Settings',
+    summary: 'Pinyin, characters and sound for flashcards.',
+    rows: [
+      { key: 'flashcardShowPinyin', label: 'Show Pinyin', description: 'Show how each word is pronounced, in letters, after the card is tapped.' },
+      { key: 'flashcardShowCharacters', label: 'Show Characters', description: 'Show the Chinese characters for each word under the picture.' },
+      { key: 'flashcardAudio', label: 'Audio', description: 'Play a recording of each word when a card is tapped.' },
+    ],
+  },
+  listen: {
+    title: 'Listen + Tap Settings',
+    summary: 'Pinyin, characters and the repeat button for Listen + Tap.',
+    rows: [
+      { key: 'listenShowPinyin', label: 'Show Pinyin', description: 'Show how each word is pronounced under a picture after it is tapped.' },
+      { key: 'listenShowCharacters', label: 'Show Characters', description: 'Show the Chinese characters for each word under the picture.' },
+      { key: 'listenRepeatButton', label: 'Audio', description: 'Show a repeat button.' },
+    ],
+  },
+};
+/** Every learning switch, page by page. */
+export const SETTING_ROWS: readonly SettingRow[] = [...LEARNING_PAGES.flashcard.rows, ...LEARNING_PAGES.listen.rows];
+const PAGE_TITLES: Record<SettingsPage, string> = {
+  main: 'Settings',
+  learning: 'Learning Settings',
+  flashcard: LEARNING_PAGES.flashcard.title,
+  listen: LEARNING_PAGES.listen.title,
+};
+/** Where the back arrow goes from each page. */
+const PARENT: Record<Exclude<SettingsPage, 'main'>, SettingsPage> = {
+  learning: 'main',
+  flashcard: 'learning',
+  listen: 'learning',
+};
+const LEARNING_SUMMARY = 'Choose what shows and plays in each kind of session.';
 const CLOUD_DESCRIPTION = 'Keep your progress safe and share it between devices.';
 
 /** Slide-in settings overlay. Opened only by the gear on the home screen. */
 @Component({
   selector: 'app-settings-panel',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AccountPanelComponent],
+  imports: [AccountPanelComponent, NgTemplateOutlet],
   template: `
     <div class="fixed inset-0 z-40 flex justify-end bg-black/40" data-testid="settings-backdrop" (click)="closed.emit()">
       <section
@@ -37,8 +75,19 @@ const CLOUD_DESCRIPTION = 'Keep your progress safe and share it between devices.
         data-testid="settings-panel"
         (click)="$event.stopPropagation()"
       >
-        <header class="flex items-center justify-between">
-          <h2 id="settings-title" class="text-2xl font-semibold">Settings</h2>
+        <header class="flex items-center gap-2">
+          @if (page() !== 'main') {
+            <button
+              type="button"
+              class="flex min-h-11 min-w-11 items-center justify-center rounded-full text-2xl"
+              [attr.aria-label]="'Back to ' + parentTitle()"
+              data-testid="settings-back"
+              (click)="back()"
+            >
+              ←
+            </button>
+          }
+          <h2 id="settings-title" class="flex-1 text-2xl font-semibold" data-testid="settings-title">{{ title() }}</h2>
           <button
             type="button"
             class="flex min-h-11 min-w-11 items-center justify-center rounded-full text-2xl"
@@ -50,22 +99,63 @@ const CLOUD_DESCRIPTION = 'Keep your progress safe and share it between devices.
           </button>
         </header>
 
-        @for (row of rows; track row.key) {
-          <label class="flex min-h-11 items-center gap-4 border-b border-slate-200 dark:border-slate-700 py-3">
-            <span class="flex-1">
-              <span class="block text-lg font-medium">{{ row.label }}</span>
-              <span class="block text-sm text-slate-600 dark:text-slate-300">{{ row.description }}</span>
-            </span>
-            <input
-              type="checkbox"
-              role="switch"
-              class="size-7 shrink-0"
-              [checked]="store.settings()[row.key]"
-              [attr.data-testid]="'toggle-' + row.key"
-              (change)="toggle(row.key, $event)"
-            />
-          </label>
+        @switch (page()) {
+          @case ('main') {
+            <ng-container *ngTemplateOutlet="link; context: { $implicit: 'learning', label: 'Learning Settings', summary: learningSummary }" />
+            <ng-container *ngTemplateOutlet="cloud" />
+          }
+          @case ('learning') {
+            <ng-container *ngTemplateOutlet="link; context: { $implicit: 'flashcard', label: pages.flashcard.title, summary: pages.flashcard.summary }" />
+            <ng-container *ngTemplateOutlet="link; context: { $implicit: 'listen', label: pages.listen.title, summary: pages.listen.summary }" />
+          }
+          @case ('flashcard') {
+            <ng-container *ngTemplateOutlet="switches; context: { $implicit: pages.flashcard.rows }" />
+          }
+          @case ('listen') {
+            <ng-container *ngTemplateOutlet="switches; context: { $implicit: pages.listen.rows }" />
+          }
         }
+      </section>
+    </div>
+    <app-account-panel [(open)]="accountOpen" />
+
+    <!-- A row that opens a submenu page. -->
+    <ng-template #link let-target let-label="label" let-summary="summary">
+      <button
+        type="button"
+        class="flex min-h-11 w-full items-center gap-4 border-b border-slate-200 dark:border-slate-700 py-3 text-left"
+        [attr.data-testid]="'open-' + target"
+        (click)="go(target)"
+      >
+        <span class="flex-1">
+          <span class="block text-lg font-medium">{{ label }}</span>
+          <span class="block text-sm text-slate-600 dark:text-slate-300">{{ summary }}</span>
+        </span>
+        <span class="text-2xl" aria-hidden="true">›</span>
+      </button>
+    </ng-template>
+
+    <!-- The switches on a submenu page. -->
+    <ng-template #switches let-rows>
+      @for (row of rows; track row.key) {
+        <label class="flex min-h-11 items-center gap-4 border-b border-slate-200 dark:border-slate-700 py-3">
+          <span class="flex-1">
+            <span class="block text-lg font-medium">{{ row.label }}</span>
+            <span class="block text-sm text-slate-600 dark:text-slate-300">{{ row.description }}</span>
+          </span>
+          <input
+            type="checkbox"
+            role="switch"
+            class="size-7 shrink-0"
+            [checked]="isOn(row.key)"
+            [attr.data-testid]="'toggle-' + row.key"
+            (change)="toggle(row.key, $event)"
+          />
+        </label>
+      }
+    </ng-template>
+
+    <ng-template #cloud>
         <div class="flex flex-col gap-2 py-3" data-testid="cloud-section">
           <span class="block text-lg font-medium">Save to Cloud</span>
           @if (auth.signedIn()) {
@@ -94,9 +184,7 @@ const CLOUD_DESCRIPTION = 'Keep your progress safe and share it between devices.
             <button type="button" [class]="button" data-testid="cloud-save" (click)="accountOpen.set(true)">Save to Cloud</button>
           }
         </div>
-      </section>
-    </div>
-    <app-account-panel [(open)]="accountOpen" />
+    </ng-template>
   `,
 })
 export class SettingsPanelComponent {
@@ -104,7 +192,15 @@ export class SettingsPanelComponent {
   protected readonly auth = inject(AuthService);
   protected readonly syncStatus = inject(SyncStatusService);
   private readonly notifications = inject(NotificationService);
-  protected readonly rows = SETTING_ROWS;
+  protected readonly pages = LEARNING_PAGES;
+  protected readonly learningSummary = LEARNING_SUMMARY;
+  /** The panel always opens on the main page. */
+  protected readonly page = signal<SettingsPage>('main');
+  protected readonly title = computed(() => PAGE_TITLES[this.page()]);
+  protected readonly parentTitle = computed(() => {
+    const p = this.page();
+    return p === 'main' ? '' : PAGE_TITLES[PARENT[p]];
+  });
   protected readonly cloudDescription = CLOUD_DESCRIPTION;
   protected readonly button =
     'min-h-11 min-w-11 w-full rounded-xl bg-slate-800 dark:bg-slate-200 px-5 py-3 text-lg font-semibold text-white dark:text-slate-900';
@@ -117,7 +213,17 @@ export class SettingsPanelComponent {
     if (Number.isNaN(date.getTime())) return 'Not synced yet';
     return `Last synced: ${date.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}`;
   });
-  protected toggle(key: BooleanFlag, event: Event): void {
+  protected isOn(key: LearningFlag): boolean {
+    return this.store.settings()[key];
+  }
+  protected go(page: SettingsPage): void {
+    this.page.set(page);
+  }
+  protected back(): void {
+    const p = this.page();
+    if (p !== 'main') this.page.set(PARENT[p]);
+  }
+  protected toggle(key: LearningFlag, event: Event): void {
     const changes: Partial<UserSettings> = { [key]: (event.target as HTMLInputElement).checked };
     this.store.updateSettings(changes);
   }

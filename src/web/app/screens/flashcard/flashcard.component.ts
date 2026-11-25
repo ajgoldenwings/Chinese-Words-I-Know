@@ -5,7 +5,7 @@ import { applyCorrectAnswer, applyIncorrectAnswer } from '@shared/confidence';
 import { loadContent, selectStartNowCategory } from '@shared/content';
 import type { Word } from '@shared/entities';
 import { buildWordLists } from '@shared/lists';
-import { getWordDisplay, orderWordsForSession } from '@shared/session';
+import { flashcardDisplaySettings, getWordDisplay, orderWordsForSession } from '@shared/session';
 import { AppStore } from '@shared/store';
 import { map } from 'rxjs';
 import { AudioService } from '../../services/audio.service';
@@ -47,10 +47,12 @@ export class FlashcardComponent {
   protected readonly revealed = signal(false);
   private readonly imageFailed = signal(false);
   protected readonly word = computed(() => this.queue()[this.index()] ?? null);
+  /** Flashcard settings only. Characters show with the image; pinyin waits for the tap (see the template). */
   protected readonly display = computed(() => {
     const w = this.word();
-    return w ? getWordDisplay(w, this.store.settings()) : null;
+    return w ? getWordDisplay(w, flashcardDisplaySettings(this.store.settings())) : null;
   });
+  protected readonly audioOn = computed(() => this.store.settings().flashcardAudio);
   /** The fallback emoji is the current word's category, so it is right in a mixed Learn Next session. */
   protected readonly emoji = computed(() => {
     const id = this.word()?.category ?? this.categoryId();
@@ -74,14 +76,14 @@ export class FlashcardComponent {
   }
 
   /**
-   * Sound plays only when the card is pressed, never when a card appears.
-   * Every press plays the word from the start. The first press also reveals the answer buttons.
+   * Sound plays only when the card is pressed (and Flashcard Audio is on), never when a card appears.
+   * Every press plays the word from the start. The first press also reveals the pinyin and the answer buttons.
    */
   protected onCardPress(): void {
     const w = this.word();
     if (!w) return;
     this.revealed.set(true);
-    void this.audio.play(w.audioAsset, 'natural');
+    if (this.audioOn()) void this.audio.play(w.audioAsset, 'natural');
   }
 
   protected onImageError(): void {

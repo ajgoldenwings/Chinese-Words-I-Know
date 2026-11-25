@@ -57,7 +57,7 @@ describe('AppStore', () => {
       STORE_STORAGE_KEY,
       JSON.stringify({
         wordStates: { cat: { confidenceScore: 0.5 }, bad: 'x' },
-        settings: { showPinyin: 'yes' },
+        settings: { flashcardShowPinyin: 'yes', showPinyin: 'yes' },
         lastContentVersion: 'nope',
       }),
     );
@@ -68,21 +68,44 @@ describe('AppStore', () => {
     expect(store.lastContentVersion()).toBeNull();
   });
 
+  it('carries settings saved before the split by session type over to both modes', () => {
+    const storage = new MemoryStorage();
+    storage.setItem(
+      STORE_STORAGE_KEY,
+      JSON.stringify({ settings: { showPinyin: true, showCharacters: true, audioEnabled: false, cloudSyncEnabled: true } }),
+    );
+    expect(create(storage).store.settings()).toEqual({
+      flashcardShowPinyin: true,
+      flashcardShowCharacters: true,
+      flashcardAudio: false,
+      listenShowPinyin: true,
+      listenShowCharacters: true,
+      listenRepeatButton: true, // new, so it starts on
+      cloudSyncEnabled: true,
+    });
+  });
+  it('a flag saved under its current name wins over a legacy value', () => {
+    const storage = new MemoryStorage();
+    storage.setItem(STORE_STORAGE_KEY, JSON.stringify({ settings: { showPinyin: true, listenShowPinyin: false } }));
+    const s = create(storage).store.settings();
+    expect(s.flashcardShowPinyin).toBe(true);
+    expect(s.listenShowPinyin).toBe(false);
+  });
   it('keeps working when storage writes throw', () => {
     const storage = new MemoryStorage();
     storage.setItem = () => {
       throw new Error('quota');
     };
     const { store } = create(storage);
-    expect(() => store.updateSettings({ showPinyin: true })).not.toThrow();
-    expect(store.settings().showPinyin).toBe(true);
+    expect(() => store.updateSettings({ flashcardShowPinyin: true })).not.toThrow();
+    expect(store.settings().flashcardShowPinyin).toBe(true);
   });
 
   it('persists settings and falls back to defaults on corrupt data', () => {
     const first = create();
-    first.store.updateSettings({ showPinyin: true });
+    first.store.updateSettings({ listenShowCharacters: true });
     const second = create(first.storage);
-    expect(second.store.settings()).toEqual({ ...DEFAULT_USER_SETTINGS, showPinyin: true });
+    expect(second.store.settings()).toEqual({ ...DEFAULT_USER_SETTINGS, listenShowCharacters: true });
 
     const bad = new MemoryStorage();
     bad.setItem(STORE_STORAGE_KEY, '{not json');
