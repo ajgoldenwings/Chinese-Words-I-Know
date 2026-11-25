@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { applyCorrectAnswer, applyIncorrectAnswer } from '@shared/confidence';
-import { flashcardDisplaySettings, getWordDisplay, listenDisplaySettings, orderWordsForSession } from '@shared/session';
+import { flashcardDisplaySettings, getWordDisplay, listenDisplaySettings, pickNextTarget, shufflePass } from '@shared/session';
 import { createDefaultWordState } from '@shared/store';
+import { seededRandom as seeded } from '../seeded-random';
 import { DEFAULT_USER_SETTINGS, type Word } from '@shared/entities';
 
 const w = (id: string, audioAsset: string | null = null) => ({ id, audioAsset }) as unknown as Word;
@@ -13,13 +14,34 @@ describe('session logic', () => {
     expect(applyIncorrectAnswer(s).confidenceScore).toBe(0.38);
   });
 
-  it('orders lowest confidence first, ties in content order, missing state as 0', () => {
-    const states = {
-      a: { ...createDefaultWordState('a'), confidenceScore: 0.5 },
-      c: { ...createDefaultWordState('c'), confidenceScore: 0.2 },
-    };
-    const ids = orderWordsForSession([w('a'), w('b'), w('c'), w('d')], states).map((x) => x.id);
-    expect(ids).toEqual(['b', 'd', 'c', 'a']);
+  const ws = ['a', 'b', 'c', 'd', 'e', 'f'].map((id) => w(id));
+  it('a pass contains every word exactly once, in a random order', () => {
+    const random = seeded(1);
+    const orders = new Set<string>();
+    for (let i = 0; i < 50; i++) {
+      const ids = shufflePass(ws, null, random).map((x) => x.id);
+      expect([...ids].sort()).toEqual(['a', 'b', 'c', 'd', 'e', 'f']);
+      orders.add(ids.join(''));
+    }
+    expect(orders.size).toBeGreaterThan(20); // not one fixed order
+  });
+  it('a pass never starts with the word that ended the previous one', () => {
+    const random = seeded(2);
+    for (let i = 0; i < 200; i++) expect(shufflePass(ws, 'c', random)[0].id).not.toBe('c');
+    // A single word has nothing to swap with, so it simply repeats.
+    expect(shufflePass([w('a')], 'a', random).map((x) => x.id)).toEqual(['a']);
+  });
+  it('the next target is random and never the previous one', () => {
+    const random = seeded(3);
+    const seen = new Set<string>();
+    for (let i = 0; i < 200; i++) {
+      const t = pickNextTarget(ws, 'a', random)!;
+      expect(t.id).not.toBe('a');
+      seen.add(t.id);
+    }
+    expect([...seen].sort()).toEqual(['b', 'c', 'd', 'e', 'f']); // every other word gets picked
+    expect(pickNextTarget([w('a')], 'a', random)?.id).toBe('a');
+    expect(pickNextTarget([], null, random)).toBeNull();
   });
 
   it('falls back to pinyin when there is no audio and both text settings are off', () => {

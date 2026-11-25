@@ -15,7 +15,7 @@ A parent and young child learn Mandarin Chinese together through a minimal, dist
 Tasks cite these by number (for example `_Requirements: 5, 6_`).
 
 1. **Learners:** Parent + child together, learning Mandarin
-2. **Core interactions:** Flashcard recall (see → remember) and listening + tapping (hear → identify)
+2. **Core interactions:** Flashcard recall (see → remember) and listening + tapping (hear → identify). In both, the next word is random
 3. **Chinese:** Mandarin, simplified characters. Pinyin and character display are off by default, and set separately for each session type (flashcards and Listen + Tap) under Learning Settings
 4. **Content:** Thematic categories (animals, food, colors, etc.) as the structure for learning. Lessons are a future feature. ~1000 word ceiling
 5. **Word knowledge model:** App-driven confidence scoring (auto tracks right/wrong) with manual parent override (mark known/unknown). Confidence model is defined in [Confidence Model](core/confidence-model.md)

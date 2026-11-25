@@ -6,6 +6,7 @@ import { loadContent } from '@shared/content';
 import { APP_STORAGE, AppStore, MemoryStorage } from '@shared/store';
 import { FlashcardComponent } from '../../src/web/app/screens/flashcard/flashcard.component';
 import { HomeComponent } from '../../src/web/app/screens/home/home.component';
+import { FIXED_ORDER } from './fixed-order';
 
 /** Every learning switch and the submenu page it is on. */
 const FLAGS = [
@@ -27,7 +28,7 @@ async function boot(storage: MemoryStorage) {
         { path: '', component: HomeComponent },
         { path: 'session/flashcard/:categoryId', component: FlashcardComponent },
       ]),
-      { provide: APP_STORAGE, useValue: storage },
+      { provide: APP_STORAGE, useValue: storage }, FIXED_ORDER,
     ],
   });
   const store = TestBed.inject(AppStore);

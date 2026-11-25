@@ -5,11 +5,12 @@ import { applyCorrectAnswer, applyIncorrectAnswer } from '@shared/confidence';
 import { loadContent, selectStartNowCategory } from '@shared/content';
 import type { Word } from '@shared/entities';
 import { buildWordLists } from '@shared/lists';
-import { flashcardDisplaySettings, getWordDisplay, orderWordsForSession } from '@shared/session';
+import { flashcardDisplaySettings, getWordDisplay, shufflePass } from '@shared/session';
 import { AppStore } from '@shared/store';
 import { map } from 'rxjs';
 import { AudioService } from '../../services/audio.service';
 import { ImageService } from '../../services/image.service';
+import { SESSION_RANDOM } from '../../services/session-random';
 
 @Component({
   selector: 'app-flashcard',
@@ -41,7 +42,8 @@ export class FlashcardComponent {
     () => this.content.categories.find((c) => c.id === this.categoryId()) ?? null,
   );
   private readonly store = inject(AppStore);
-  /** The current pass, lowest confidence first. Re-ordered each time the pass wraps. */
+  private readonly random = inject(SESSION_RANDOM);
+  /** The current pass in random order. Shuffled again each time the pass wraps. */
   private readonly queue = signal<Word[]>([]);
   protected readonly index = signal(0);
   protected readonly revealed = signal(false);
@@ -116,23 +118,28 @@ export class FlashcardComponent {
     }
   }
 
+  /**
+   * Builds the next pass in random order. Each word shows once per pass, and the last word of
+   * the previous pass never comes straight back as the first of the next.
+   */
   private startPass(): void {
     const states = this.store.wordStates();
+    const last = this.word()?.id ?? null;
     if (this.learnNext) {
       // Learn Next is rebuilt at the start of every pass, so it follows the latest scores.
       const words = buildWordLists(this.content.words, states).learnNext;
       if (words.length > 0) {
-        this.queue.set(words);
+        this.queue.set(shufflePass(words, last, this.random));
         return;
       }
       // Every word reached 0.6 during the session: carry on with the Start Now category.
       const fallback = selectStartNowCategory(this.content, states);
       const inFallback = this.content.words.filter((w) => w.category === fallback);
-      this.queue.set(orderWordsForSession(inFallback, states));
+      this.queue.set(shufflePass(inFallback, last, this.random));
       return;
     }
     const inCategory = this.content.words.filter((w) => w.category === this.categoryId());
-    this.queue.set(orderWordsForSession(inCategory, states));
+    this.queue.set(shufflePass(inCategory, last, this.random));
   }
 
   private resetCard(index: number): void {

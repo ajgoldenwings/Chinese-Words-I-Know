@@ -1,4 +1,4 @@
-export { flashcardDisplaySettings, getWordDisplay, listenDisplaySettings, orderWordsForSession } from './session';
+export { flashcardDisplaySettings, getWordDisplay, listenDisplaySettings, pickNextTarget, shufflePass } from './session';
 export type { DisplaySettings, WordDisplay } from './session';
 export {
   LISTEN_TILE_COUNT,

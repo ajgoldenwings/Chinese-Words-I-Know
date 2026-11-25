@@ -6,6 +6,9 @@ import type { Word } from '@shared/entities';
 import { APP_STORAGE, AppStore, MemoryStorage, createDefaultWordState } from '@shared/store';
 import { ListenComponent } from '../../src/web/app/screens/listen/listen.component';
 import { AudioService } from '../../src/web/app/services/audio.service';
+import { FIXED_ORDER } from './fixed-order';
+import { seededRandom } from '../seeded-random';
+import { SESSION_RANDOM } from '../../src/web/app/services/session-random';
 
 const word = (id: string, category: string, imaged: boolean, audio = false): Word => ({
   id,
@@ -36,7 +39,7 @@ const content = (imaged: number): Content => ({
 function setup(imaged = 6) {
   TestBed.resetTestingModule();
   TestBed.configureTestingModule({
-    providers: [provideRouter([]), { provide: APP_STORAGE, useValue: new MemoryStorage() }],
+    providers: [provideRouter([]), { provide: APP_STORAGE, useValue: new MemoryStorage() }, FIXED_ORDER],
   });
   const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
   const play = vi.spyOn(TestBed.inject(AudioService), 'play').mockResolvedValue(undefined);
@@ -63,7 +66,7 @@ describe('ListenComponent', () => {
     expect(ids).toHaveLength(4);
     expect(new Set(ids).size).toBe(4);
     expect(ids.every((id) => /^w\d$/.test(id))).toBe(true); // no unimaged or other-category words
-    expect(ids).toContain('w0'); // lowest confidence, first in content order
+    expect(ids).toContain('w0'); // FIXED_ORDER: the first target is the first imaged word
   });
 
   it('correct tile raises the target by 0.05 and shows a check mark', () => {
@@ -97,7 +100,7 @@ describe('ListenComponent', () => {
     store.updateSettings({ flashcardAudio: false });
     fixture.detectChanges();
     click(tile('w0'));
-    // w0 is now at 0.05, so w1 (score 0, has audio) is the next target.
+    // FIXED_ORDER: the next target is the next word that is not w0, so w1 (it has audio).
     click(el.querySelector<HTMLElement>('[data-testid="next"]')!);
     expect(play).toHaveBeenCalledWith('w1', 'slow');
     expect(el.querySelector('[data-testid="prompt"]')).toBeNull();
@@ -219,5 +222,48 @@ describe('ListenComponent', () => {
     const { navigate, tiles } = setup(3);
     expect(navigate).toHaveBeenCalledWith('/');
     expect(tiles()).toHaveLength(0);
+  });
+});
+describe('Listen + Tap order is random', () => {
+  function randomSetup(random: () => number) {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: APP_STORAGE, useValue: new MemoryStorage() },
+        { provide: SESSION_RANDOM, useValue: random },
+      ],
+    });
+    vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+    vi.spyOn(TestBed.inject(AudioService), 'play').mockResolvedValue(undefined);
+    const fixture = TestBed.createComponent(ListenComponent);
+    (fixture.componentInstance as unknown as { content: Content }).content = content(8);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const target = () => (fixture.componentInstance as unknown as { target: () => Word | null }).target()!.id;
+    const solve = () => {
+      el.querySelector<HTMLElement>(`[data-testid="tile"][data-word-id="${target()}"]`)!.click();
+      fixture.detectChanges();
+      el.querySelector<HTMLElement>('[data-testid="next"]')!.click();
+      fixture.detectChanges();
+    };
+    return { target, solve };
+  }
+  it('targets are random, never the same twice in a row, and every word comes up', () => {
+    const { target, solve } = randomSetup(seededRandom(11));
+    const seen: string[] = [];
+    for (let i = 0; i < 80; i++) {
+      seen.push(target());
+      solve();
+    }
+    for (let i = 1; i < seen.length; i++) expect(seen[i]).not.toBe(seen[i - 1]);
+    expect(new Set(seen).size).toBe(8);
+    // Not simply walking through the words in content order.
+    expect(seen.slice(0, 8)).not.toEqual(['w0', 'w1', 'w2', 'w3', 'w4', 'w5', 'w6', 'w7']);
+  });
+  it('the first target differs between sessions', () => {
+    const firsts = new Set<string>();
+    for (let s = 1; s <= 12; s++) firsts.add(randomSetup(seededRandom(s)).target());
+    expect(firsts.size).toBeGreaterThan(3);
   });
 });

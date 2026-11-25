@@ -20,6 +20,7 @@ import { AUDIO_ELEMENT_FACTORY, AudioService } from '../../src/web/app/services/
 import { ImageService } from '../../src/web/app/services/image.service';
 import { FlashcardComponent } from '../../src/web/app/screens/flashcard/flashcard.component';
 import swConfig from '../../ngsw-config.json';
+import { FIXED_ORDER } from './fixed-order';
 
 const files = ['/index.html', '/manifest.webmanifest', '/main-ABC.js', '/styles-ABC.css'];
 async function generate(baseHref: string) {
@@ -76,7 +77,7 @@ async function open(hasImage: boolean) {
   TestBed.configureTestingModule({
     providers: [
       provideRouter([{ path: 'session/flashcard/:categoryId', component: FlashcardComponent }]),
-      { provide: APP_STORAGE, useValue: new MemoryStorage() },
+      { provide: APP_STORAGE, useValue: new MemoryStorage() }, FIXED_ORDER,
       {
         provide: AudioService,
         useValue: {
@@ -140,7 +141,7 @@ describe('AudioService with cached and uncached files', () => {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
-        { provide: APP_STORAGE, useValue: new MemoryStorage() },
+        { provide: APP_STORAGE, useValue: new MemoryStorage() }, FIXED_ORDER,
         {
           provide: AUDIO_ELEMENT_FACTORY,
           // One element is reused, so record the source each time it plays.

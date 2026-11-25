@@ -7,7 +7,7 @@ import type { Word } from '@shared/entities';
 import {
   buildListenTiles,
   imagedWordsInCategory,
-  orderWordsForSession,
+  pickNextTarget,
   selectListenCategory,
   getWordDisplay,
   listenDisplaySettings,
@@ -17,6 +17,7 @@ import { AppStore } from '@shared/store';
 import { map } from 'rxjs';
 import { AudioService } from '../../services/audio.service';
 import { ImageService } from '../../services/image.service';
+import { SESSION_RANDOM } from '../../services/session-random';
 
 @Component({
   selector: 'app-listen',
@@ -37,6 +38,7 @@ export class ListenComponent {
   private readonly images = inject(ImageService);
   private readonly audio = inject(AudioService);
   private readonly store = inject(AppStore);
+  private readonly random = inject(SESSION_RANDOM);
   private readonly content = loadContent();
   private readonly requested = toSignal(
     this.route.queryParamMap.pipe(map((p) => p.get('category'))),
@@ -133,7 +135,7 @@ export class ListenComponent {
     this.startRound(this.target()?.id);
   }
 
-  /** Picks the lowest-confidence imaged word (not the previous target) as target and builds its tiles. */
+  /** Picks a random imaged word (not the previous target) as the target and builds its tiles. */
   protected startRound(previousId?: string): void {
     this.solved.set(false);
     this.wrongIds.set(new Set());
@@ -146,10 +148,10 @@ export class ListenComponent {
       return;
     }
     const imaged = imagedWordsInCategory(this.content.words, id);
-    const ordered = orderWordsForSession(imaged, this.store.wordStates());
-    const target = ordered.find((w) => w.id !== previousId) ?? ordered[0] ?? null;
+    // A random target each round, never the previous one (ux/first-run.md#session-order).
+    const target = pickNextTarget(imaged, previousId, this.random);
     this.target.set(target);
-    this.tiles.set(target ? buildListenTiles(this.content.words, target) : []);
+    this.tiles.set(target ? buildListenTiles(this.content.words, target, this.random) : []);
     if (target && this.hasAudioPrompt()) {
       void this.audio.play(target.audioAsset, 'slow');
     }

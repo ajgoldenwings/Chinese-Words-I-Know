@@ -1,21 +1,37 @@
-import type { UserSettings, UserWordState, Word } from '../entities';
+import type { UserSettings, Word } from '../entities';
+import { shuffle } from './listen';
 
 /**
- * One pass through a category, lowest confidence first. Ties keep content order.
- * Words with no stored state count as score 0.
+ * One pass of a session in random order (ux/first-run.md#session-order). Every word appears
+ * exactly once per pass. When `previousId` (the last word of the previous pass) would come
+ * first, it is swapped with another word so the same word never shows twice in a row.
+ * `random` returns a number in [0, 1).
  */
-export function orderWordsForSession(
-  words: readonly Word[],
-  wordStates: Readonly<Record<string, UserWordState | undefined>>,
-): Word[] {
-  return words
-    .map((word, position) => ({
-      word,
-      position,
-      score: wordStates[word.id]?.confidenceScore ?? 0,
-    }))
-    .sort((a, b) => a.score - b.score || a.position - b.position)
-    .map((entry) => entry.word);
+export function shufflePass<T extends { id: string }>(
+  words: readonly T[],
+  previousId: string | null | undefined,
+  random: () => number = Math.random,
+): T[] {
+  const pass = shuffle(words, random);
+  if (pass.length > 1 && previousId && pass[0].id === previousId) {
+    const j = 1 + Math.floor(random() * (pass.length - 1));
+    [pass[0], pass[j]] = [pass[j], pass[0]];
+  }
+  return pass;
+}
+
+/**
+ * A random next target, never the previous one when there is another word to choose.
+ * Returns null only when `words` is empty.
+ */
+export function pickNextTarget<T extends { id: string }>(
+  words: readonly T[],
+  previousId: string | null | undefined,
+  random: () => number = Math.random,
+): T | null {
+  const others = words.filter((w) => w.id !== previousId);
+  const pool = others.length > 0 ? others : words;
+  return shuffle(pool, random)[0] ?? null;
 }
 
 export interface WordDisplay {

@@ -151,7 +151,7 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
     - _Requirements: 9, 10_
   - [x] 8.4 Base Start Now on Learn Next
     - First launch: the Animals flashcards, unchanged
-    - Returning user: a flashcard session over the Learn Next list at `/session/learn-next`, in Learn Next order, rebuilt each pass, with each word's own category emoji as its image fallback
+    - Returning user: a flashcard session over the Learn Next list at `/session/learn-next`, rebuilt each pass, with each word's own category emoji as its image fallback
     - If Learn Next is empty, fall back to the category rule in [First-Run Experience](ux/first-run.md#returning-user)
     - Tests: first launch, returning user, the empty fallback, the session order, and the per-word emoji
     - _Requirements: 6, 9_
@@ -176,7 +176,7 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
   - [x] 9.2 Implement session logic
     - Each answer calls the confidence engine, updates the store, and advances to the next word
     - Sessions are **continuous**: words cycle through the category until the parent or child taps the faint back button
-    - Words are ordered lowest confidence first, then cycle
+    - Words are shown in random order, one pass at a time, then cycle (see task 24)
     - Respect `showPinyin` and `showCharacters`, plus the pinyin fallback in [Progressive Disclosure](ux/progressive-disclosure.md)
     - _Requirements: 2, 3, 5, 10_
   - [x] 9.3 Write session tests
@@ -436,6 +436,22 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
   - [x] 23.6 Write tests
     - Panel pages, back and reopen, wording, each switch persists across reload, defaults, carrying old settings over, flashcard pinyin after the tap and characters before it, Flashcard Audio off, Listen + Tap characters, pinyin after a tap, fallback, faded picture, Repeat button shown, hidden and playing, and the My Words detail
     - _Requirements: 3, 6, 7, 10_
+- [x] 24. Random word order in sessions
+  - The next word is random in flashcards and Listen + Tap, instead of lowest confidence first. See [First-Run Experience](ux/first-run.md#session-order)
+  - Demo: open the same flashcard category twice; the cards come in a different order each time, and no card shows twice in a row. In Listen + Tap the target changes at random each round
+  - [x] 24.1 Shuffle flashcard passes
+    - Each pass shows every word once in a new random order (`shufflePass`); the last word of a pass never starts the next
+    - Applies to category sessions and the Learn Next session; Learn Next still chooses which words are in it
+    - _Requirements: 2, 5_
+  - [x] 24.2 Random Listen + Tap targets
+    - Each round picks a random imaged word that is not the previous target (`pickNextTarget`); tiles and distractors stay random
+    - _Requirements: 2_
+  - [x] 24.3 Inject the random source
+    - `SESSION_RANDOM` (default `Math.random`) feeds both screens; tests use a fixed source (`FIXED_ORDER`) or a seeded one
+    - _Requirements: 2_
+  - [x] 24.4 Write tests
+    - A pass has every word once; passes differ; no back-to-back repeat at a pass boundary; the first card and first target differ between sessions; confidence does not decide the order; every word comes up as a target
+    - _Requirements: 2, 5_
 ## Notes
 
 - The design has no Correctness Properties section, so this plan uses unit and integration tests only and no property-based tests
@@ -474,7 +490,8 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
     { "id": 24, "tasks": ["22.2"] },
     { "id": 25, "tasks": ["22.3", "23.1"] },
     { "id": 26, "tasks": ["23.2", "23.3", "23.4", "23.5"] },
-    { "id": 27, "tasks": ["23.6"] }
+    { "id": 27, "tasks": ["23.6", "24.1", "24.2", "24.3"] },
+    { "id": 28, "tasks": ["24.4"] }
   ]
 }
 ```

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { loadContent, parseContent, selectStartNowCategory } from '@shared/content';
 import type { Category, UserWordState, Word } from '@shared/entities';
 import { buildWordLists } from '@shared/lists';
-import { orderWordsForSession } from '@shared/session';
+import { pickNextTarget, shufflePass } from '@shared/session';
 import { activeWordStates, migrateContent } from '@shared/store';
 
 // Generous bounds: they catch accidental O(n^2) work, not small slowdowns.
@@ -85,8 +85,9 @@ describe('scale', () => {
       expect(time(() => migrateContent({ wordStates: {}, lastContentVersion: null }, content))).toBeLessThan(BOUND_MS);
       expect(time(() => migrateContent({ wordStates, lastContentVersion: 0 }, content))).toBeLessThan(BOUND_MS);
       expect(time(() => buildWordLists(content.words, activeWordStates(wordStates, content).reduce<Record<string, UserWordState>>((m, s) => ((m[s.wordId] = s), m), {})))).toBeLessThan(BOUND_MS);
-      expect(time(() => orderWordsForSession(inCategory, wordStates))).toBeLessThan(BOUND_MS);
-      expect(time(() => orderWordsForSession(content.words, wordStates))).toBeLessThan(BOUND_MS);
+      expect(time(() => shufflePass(inCategory, inCategory[0]?.id))).toBeLessThan(BOUND_MS);
+      expect(time(() => shufflePass(content.words, content.words[0]?.id))).toBeLessThan(BOUND_MS);
+      expect(time(() => pickNextTarget(content.words, content.words[0]?.id))).toBeLessThan(BOUND_MS);
       expect(time(() => selectStartNowCategory(content, wordStates))).toBeLessThan(BOUND_MS);
     });
   }
