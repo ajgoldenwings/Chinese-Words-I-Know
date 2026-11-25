@@ -29,6 +29,8 @@ Each flag is independent; enabling one does not require enabling another. Settin
 - If the last sync failed, a plain-language error shows under the sync line and stays until a sync succeeds. See [Error Handling](error-handling.md)
 - Signed out hides the sync line and refresh icon
 
+**Not a setting:** the light or dark theme follows the device and has no flag or toggle. See [Accessibility](accessibility.md#dark-theme).
+
 **Future flags (not yet implemented):**
 - `scoreDecayEnabled` — enables confidence score decay over time
 - `analyticsEnabled` — enables usage analytics

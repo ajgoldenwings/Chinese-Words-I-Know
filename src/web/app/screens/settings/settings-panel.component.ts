@@ -30,7 +30,7 @@ const CLOUD_DESCRIPTION = 'Keep your progress safe and share it between devices.
   template: `
     <div class="fixed inset-0 z-40 flex justify-end bg-black/40" data-testid="settings-backdrop" (click)="closed.emit()">
       <section
-        class="flex h-full w-full max-w-sm flex-col gap-2 overflow-y-auto bg-white p-5 text-slate-900 shadow-xl"
+        class="flex h-full w-full max-w-sm flex-col gap-2 overflow-y-auto bg-white dark:bg-slate-900 p-5 text-slate-900 dark:text-slate-100 shadow-xl"
         role="dialog"
         aria-modal="true"
         aria-labelledby="settings-title"
@@ -51,10 +51,10 @@ const CLOUD_DESCRIPTION = 'Keep your progress safe and share it between devices.
         </header>
 
         @for (row of rows; track row.key) {
-          <label class="flex min-h-11 items-center gap-4 border-b border-slate-200 py-3">
+          <label class="flex min-h-11 items-center gap-4 border-b border-slate-200 dark:border-slate-700 py-3">
             <span class="flex-1">
               <span class="block text-lg font-medium">{{ row.label }}</span>
-              <span class="block text-sm text-slate-600">{{ row.description }}</span>
+              <span class="block text-sm text-slate-600 dark:text-slate-300">{{ row.description }}</span>
             </span>
             <input
               type="checkbox"
@@ -69,12 +69,12 @@ const CLOUD_DESCRIPTION = 'Keep your progress safe and share it between devices.
         <div class="flex flex-col gap-2 py-3" data-testid="cloud-section">
           <span class="block text-lg font-medium">Save to Cloud</span>
           @if (auth.signedIn()) {
-            <span class="block text-sm text-slate-600" data-testid="cloud-email">Signed in as {{ auth.email() }}</span>
+            <span class="block text-sm text-slate-600 dark:text-slate-300" data-testid="cloud-email">Signed in as {{ auth.email() }}</span>
             <div class="flex items-center gap-2">
-              <span class="flex-1 text-sm text-slate-600" data-testid="sync-last">{{ lastSyncedText() }}</span>
+              <span class="flex-1 text-sm text-slate-600 dark:text-slate-300" data-testid="sync-last">{{ lastSyncedText() }}</span>
               <button
                 type="button"
-                class="flex min-h-11 min-w-11 items-center justify-center rounded-full border border-slate-300 text-2xl disabled:opacity-60"
+                class="flex min-h-11 min-w-11 items-center justify-center rounded-full border border-slate-300 dark:border-slate-600 text-2xl disabled:opacity-60"
                 aria-label="Sync now"
                 data-testid="sync-refresh"
                 [disabled]="syncStatus.status().syncing"
@@ -84,13 +84,13 @@ const CLOUD_DESCRIPTION = 'Keep your progress safe and share it between devices.
               </button>
             </div>
             @if (syncStatus.status().error; as error) {
-              <p class="rounded-lg border-2 border-red-700 bg-red-50 p-3 text-sm text-red-900" role="alert" data-testid="sync-error">
+              <p class="rounded-lg border-2 border-red-700 dark:border-red-400 bg-red-50 dark:bg-red-950 p-3 text-sm text-red-900 dark:text-red-100" role="alert" data-testid="sync-error">
                 ⚠ {{ error }}
               </p>
             }
             <button type="button" [class]="button" data-testid="cloud-logout" (click)="logout()">Logout</button>
           } @else {
-            <span class="block text-sm text-slate-600">{{ cloudDescription }}</span>
+            <span class="block text-sm text-slate-600 dark:text-slate-300">{{ cloudDescription }}</span>
             <button type="button" [class]="button" data-testid="cloud-save" (click)="accountOpen.set(true)">Save to Cloud</button>
           }
         </div>
@@ -107,7 +107,7 @@ export class SettingsPanelComponent {
   protected readonly rows = SETTING_ROWS;
   protected readonly cloudDescription = CLOUD_DESCRIPTION;
   protected readonly button =
-    'min-h-11 min-w-11 w-full rounded-xl bg-slate-800 px-5 py-3 text-lg font-semibold text-white';
+    'min-h-11 min-w-11 w-full rounded-xl bg-slate-800 dark:bg-slate-200 px-5 py-3 text-lg font-semibold text-white dark:text-slate-900';
   readonly closed = output<void>();
   protected readonly accountOpen = signal(false);
   protected readonly lastSyncedText = computed(() => {

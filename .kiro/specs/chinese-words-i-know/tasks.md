@@ -396,6 +396,20 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
   - [x] 21.3 Write tests
     - The generated files exist with the sizes in the logo spec, the apple touch icon is opaque, and the manifest and `index.html` reference only files that exist, with relative paths
     - _Requirements: 11_
+- [x] 22. Dark theme that follows the device
+  - The app matches the device's light or dark mode and changes live when it changes. No toggle. See [Accessibility](ux/accessibility.md#dark-theme)
+  - Demo: switch the device to dark mode with the app open; the screen turns dark at once, mid-session, and back again when switched to light
+  - [x] 22.1 Add dark variants
+    - Give every color class a `dark:` partner (Tailwind's default `prefers-color-scheme` variant; no `@custom-variant`, no class toggle)
+    - Set `color-scheme: light dark` and the body background in `styles.css`
+    - _Requirements: 14_
+  - [x] 22.2 Keep images, boot screen, and browser bar right in dark mode
+    - `.word-image` outline in dark mode so dark drawings stay visible
+    - Dark boot screen and a dark `theme-color` in `index.html`
+    - _Requirements: 14_
+  - [x] 22.3 Write tests
+    - No theme toggle or setting exists, the theme follows `prefers-color-scheme` only, every light color class in a template has a `dark:` partner, and `index.html` declares `color-scheme`
+    - _Requirements: 14_
 ## Notes
 
 - The design has no Correctness Properties section, so this plan uses unit and integration tests only and no property-based tests
@@ -430,7 +444,9 @@ Some setup is done by a person and is not a task here: setting the GitHub Pages 
     { "id": 20, "tasks": ["20.2", "20.4"] },
     { "id": 21, "tasks": ["20.3", "21.1"] },
     { "id": 22, "tasks": ["21.2"] },
-    { "id": 23, "tasks": ["21.3"] }
+    { "id": 23, "tasks": ["21.3", "22.1"] },
+    { "id": 24, "tasks": ["22.2"] },
+    { "id": 25, "tasks": ["22.3"] }
   ]
 }
 ```

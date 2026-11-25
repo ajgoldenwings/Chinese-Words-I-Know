@@ -15,7 +15,7 @@ import { NotificationService } from './notification.service';
     >
       @for (toast of notifications.toasts(); track toast.id) {
         <p
-          class="pointer-events-none flex items-start gap-2 rounded-lg border-2 border-slate-700 bg-white px-4 py-3 text-lg text-slate-900 shadow-lg"
+          class="pointer-events-none flex items-start gap-2 rounded-lg border-2 border-slate-700 dark:border-slate-300 bg-white dark:bg-slate-900 px-4 py-3 text-lg text-slate-900 dark:text-slate-100 shadow-lg"
         >
           <span aria-hidden="true">ℹ</span>
           <span>{{ toast.message }}</span>

@@ -27,3 +27,4 @@ Tasks cite these by number (for example `_Requirements: 5, 6_`).
 11. **Platform:** Web app first. Folder structure supports future iOS and Android targets (`src/ios`, `src/android`) via Capacitor
 12. **Scope:** ~1000 words max for this version
 13. **Progress sync:** Progress is always saved on the device. A parent can optionally create an account so progress also syncs to the cloud and survives a device change or reinstall. Sync is off by default, and the app works fully without an account. Settings shows a Save to Cloud button (Logout once signed in), the time of the last successful sync, a refresh icon that syncs on demand, and a plain-language error when a sync fails
+14. **Dark theme:** The app follows the device's light or dark mode automatically, and changes as soon as the device setting changes, with no reload. There is no in-app theme toggle and no theme setting

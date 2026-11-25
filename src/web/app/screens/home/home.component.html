@@ -1,4 +1,4 @@
-<main class="relative flex min-h-dvh flex-col overflow-y-auto items-center gap-8 bg-amber-50 px-6 py-16">
+<main class="relative flex min-h-dvh flex-col overflow-y-auto items-center gap-8 bg-amber-50 dark:bg-slate-950 px-6 py-16">
   <button
     type="button"
     class="absolute right-1 top-1 flex size-11 items-center justify-center rounded-full text-2xl opacity-30 hover:opacity-60 focus-visible:opacity-80"
@@ -22,7 +22,7 @@
     @for (c of categories; track c.id) {
       <a
         [routerLink]="['/session/flashcard', c.id]"
-        class="flex min-h-11 items-center gap-3 rounded-2xl bg-white px-5 py-3 text-lg text-slate-700 shadow-sm"
+        class="flex min-h-11 items-center gap-3 rounded-2xl bg-white dark:bg-slate-900 px-5 py-3 text-lg text-slate-700 dark:text-slate-200 shadow-sm"
         data-testid="category"
       >
         <span aria-hidden="true">{{ c.emoji }}</span>
@@ -32,7 +32,7 @@
     @if (showListen()) {
       <a
         routerLink="/session/listen"
-        class="flex min-h-11 items-center rounded-2xl bg-white px-5 py-3 text-lg text-slate-700 shadow-sm"
+        class="flex min-h-11 items-center rounded-2xl bg-white dark:bg-slate-900 px-5 py-3 text-lg text-slate-700 dark:text-slate-200 shadow-sm"
         data-testid="listen"
       >
         Listen &amp; Tap
@@ -40,7 +40,7 @@
     }
     <a
       routerLink="/my-words"
-      class="flex min-h-11 items-center rounded-2xl bg-white px-5 py-3 text-lg text-slate-700 shadow-sm"
+      class="flex min-h-11 items-center rounded-2xl bg-white dark:bg-slate-900 px-5 py-3 text-lg text-slate-700 dark:text-slate-200 shadow-sm"
       data-testid="my-words"
     >
       My Words

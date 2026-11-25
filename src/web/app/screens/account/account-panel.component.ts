@@ -13,9 +13,9 @@ const FIELD_IDS: Record<AuthField, string> = {
 };
 
 const BUTTON = 'min-h-11 min-w-11 w-full rounded-xl px-5 py-3 text-lg font-semibold';
-const PRIMARY = `${BUTTON} bg-slate-800 text-white disabled:opacity-60`;
-const LINK = 'min-h-11 min-w-11 px-2 text-base font-medium text-slate-700 underline';
-const INPUT = 'min-h-11 w-full rounded-lg border-2 border-slate-400 px-3 py-2 text-lg';
+const PRIMARY = `${BUTTON} bg-slate-800 dark:bg-slate-200 text-white disabled:opacity-60 dark:text-slate-900`;
+const LINK = 'min-h-11 min-w-11 px-2 text-base font-medium text-slate-700 dark:text-slate-200 underline';
+const INPUT = 'min-h-11 w-full rounded-lg border-2 border-slate-400 dark:border-slate-500 px-3 py-2 text-lg';
 
 /**
  * Account overlay: sign up, verify, sign in, reset password, sign out.
@@ -30,7 +30,7 @@ const INPUT = 'min-h-11 w-full rounded-lg border-2 border-slate-400 px-3 py-2 te
     @if (open()) {
       <div class="fixed inset-0 z-40 flex justify-end bg-black/40" data-testid="account-backdrop" (click)="close()">
         <section
-          class="flex h-full w-full max-w-sm flex-col gap-3 overflow-y-auto bg-white p-5 text-slate-900 shadow-xl"
+          class="flex h-full w-full max-w-sm flex-col gap-3 overflow-y-auto bg-white dark:bg-slate-900 p-5 text-slate-900 dark:text-slate-100 shadow-xl"
           role="dialog"
           aria-modal="true"
           aria-labelledby="account-title"
@@ -53,7 +53,7 @@ const INPUT = 'min-h-11 w-full rounded-lg border-2 border-slate-400 px-3 py-2 te
           @switch (view()) {
             @case ('account') {
               <p class="text-lg" data-testid="account-signed-in">Signed in as {{ auth.email() }}.</p>
-              <p class="text-base text-slate-600">Your progress on this device stays here when you sign out.</p>
+              <p class="text-base text-slate-600 dark:text-slate-300">Your progress on this device stays here when you sign out.</p>
               <button type="button" [class]="primary" data-testid="account-sign-out" (click)="signOut()">Logout</button>
             }
             @case ('sign-in') {
@@ -69,7 +69,7 @@ const INPUT = 'min-h-11 w-full rounded-lg border-2 border-slate-400 px-3 py-2 te
               <form class="flex flex-col gap-3" novalidate (submit)="submit($event)">
                 <ng-container *ngTemplateOutlet="emailField" />
                 <ng-container *ngTemplateOutlet="passwordField" />
-                <p class="text-sm text-slate-600">At least 8 characters, with upper and lower case letters and a number.</p>
+                <p class="text-sm text-slate-600 dark:text-slate-300">At least 8 characters, with upper and lower case letters and a number.</p>
                 <button type="submit" [class]="primary" [disabled]="auth.busy()" data-testid="account-submit">Create account</button>
               </form>
               <button type="button" [class]="link" data-testid="account-go-sign-in" (click)="go('sign-in')">I already have an account</button>

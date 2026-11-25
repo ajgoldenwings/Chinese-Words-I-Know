@@ -1,4 +1,4 @@
-<main class="relative min-h-dvh bg-white p-4 pt-14 text-slate-900">
+<main class="relative min-h-dvh bg-white dark:bg-slate-900 p-4 pt-14 text-slate-900 dark:text-slate-100">
   <a
     routerLink="/"
     aria-label="Back"
@@ -16,27 +16,27 @@
             <li data-testid="word-entry">
               <button
                 type="button"
-                class="flex min-h-11 w-full select-none flex-col items-center gap-2 rounded-lg border border-slate-200 p-3"
+                class="flex min-h-11 w-full select-none flex-col items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 p-3"
                 data-testid="word-button"
                 [attr.aria-label]="w.english + ', open details'"
                 (click)="open(w)"
                 (appLongPress)="openMenu(w)"
               >
                 @if (imageUrl(w); as url) {
-                  <img [src]="url" [alt]="w.english" class="size-20 object-contain" (error)="onImageError(w)" />
+                  <img [src]="url" [alt]="w.english" class="word-image size-20 object-contain" (error)="onImageError(w)" />
                 } @else {
                   <span class="flex size-20 items-center justify-center text-5xl leading-none" aria-hidden="true">{{ emoji(w) }}</span>
                 }
                 <span class="text-center text-lg">{{ w.english }}</span>
                 @if (section.labels?.[w.id]; as label) {
-                  <span class="rounded-full border border-slate-400 px-2 py-0.5 text-sm text-slate-700" data-testid="confidence-label">{{ label }}</span>
+                  <span class="rounded-full border border-slate-400 dark:border-slate-500 px-2 py-0.5 text-sm text-slate-700 dark:text-slate-200" data-testid="confidence-label">{{ label }}</span>
                 }
               </button>
             </li>
           }
         </ul>
       } @else {
-        <p class="text-slate-600">{{ section.empty }}</p>
+        <p class="text-slate-600 dark:text-slate-300">{{ section.empty }}</p>
       }
     </section>
   }
@@ -48,29 +48,29 @@
       [attr.aria-label]="w.english"
       data-testid="detail"
     >
-      <div class="flex max-h-full w-full max-w-md flex-col items-center gap-3 overflow-y-auto rounded-2xl bg-white p-6">
+      <div class="flex max-h-full w-full max-w-md flex-col items-center gap-3 overflow-y-auto rounded-2xl bg-white dark:bg-slate-900 p-6">
         @if (imageUrl(w); as url) {
-          <img [src]="url" [alt]="w.english" class="size-48 object-contain" (error)="onImageError(w)" />
+          <img [src]="url" [alt]="w.english" class="word-image size-48 object-contain" (error)="onImageError(w)" />
         } @else {
           <span class="flex size-48 items-center justify-center text-9xl leading-none" aria-hidden="true">{{ emoji(w) }}</span>
         }
         <p class="text-3xl font-semibold" data-testid="detail-english">{{ w.english }}</p>
         @if (display(); as d) {
           @if (d.showPinyin) {
-            <p class="pinyin text-2xl text-slate-600">{{ w.pinyin }}</p>
+            <p class="pinyin text-2xl text-slate-600 dark:text-slate-300">{{ w.pinyin }}</p>
           }
           @if (d.showCharacters) {
             <p class="characters text-5xl">{{ w.simplified }}</p>
           }
         }
-        <p class="text-slate-600" data-testid="detail-status">{{ selectedStatus() }}</p>
+        <p class="text-slate-600 dark:text-slate-300" data-testid="detail-status">{{ selectedStatus() }}</p>
         @if (menuOpen()) {
-          <p class="text-slate-600">What would you like to do with this word?</p>
+          <p class="text-slate-600 dark:text-slate-300">What would you like to do with this word?</p>
         }
         <div class="flex w-full flex-col gap-2">
-          <button type="button" class="min-h-11 rounded-lg border-2 border-slate-900 px-4 py-2 text-lg" data-testid="mark-known" (click)="markAs('known')">Mark as Known</button>
-          <button type="button" class="min-h-11 rounded-lg border-2 border-dashed border-slate-900 px-4 py-2 text-lg" data-testid="mark-unknown" (click)="markAs('unknown')">Mark as Unknown</button>
-          <button type="button" class="min-h-11 rounded-lg px-4 py-2 text-lg text-slate-600" data-testid="detail-close" (click)="close()">Close</button>
+          <button type="button" class="min-h-11 rounded-lg border-2 border-slate-900 dark:border-slate-100 px-4 py-2 text-lg" data-testid="mark-known" (click)="markAs('known')">Mark as Known</button>
+          <button type="button" class="min-h-11 rounded-lg border-2 border-dashed border-slate-900 dark:border-slate-100 px-4 py-2 text-lg" data-testid="mark-unknown" (click)="markAs('unknown')">Mark as Unknown</button>
+          <button type="button" class="min-h-11 rounded-lg px-4 py-2 text-lg text-slate-600 dark:text-slate-300" data-testid="detail-close" (click)="close()">Close</button>
         </div>
       </div>
     </div>

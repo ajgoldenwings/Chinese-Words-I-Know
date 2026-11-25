@@ -1,4 +1,4 @@
-<main class="relative flex h-dvh flex-col bg-white text-slate-900">
+<main class="relative flex h-dvh flex-col bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
   <a
     routerLink="/"
     aria-label="Back"
@@ -17,7 +17,7 @@
       @for (tile of tiles(); track tile.id) {
         <button
           type="button"
-          class="tile relative flex min-h-11 min-w-11 items-center justify-center overflow-hidden rounded-2xl border-4 bg-slate-50 p-2"
+          class="tile relative flex min-h-11 min-w-11 items-center justify-center overflow-hidden rounded-2xl border-4 bg-slate-50 dark:bg-slate-800 p-2"
           [class.border-slate-300]="!isCorrect(tile) && !wrongIds().has(tile.id)"
           [class.border-solid]="!wrongIds().has(tile.id)"
           [class.border-green-600]="isCorrect(tile)"
@@ -33,7 +33,7 @@
           (click)="onTileTap(tile)"
         >
           @if (tileImageUrl(tile); as url) {
-            <img [src]="url" [alt]="tile.english" class="max-h-full max-w-full object-contain" (error)="onImageError(tile)" />
+            <img [src]="url" [alt]="tile.english" class="word-image max-h-full max-w-full object-contain" (error)="onImageError(tile)" />
           } @else {
             <span class="text-8xl leading-none" aria-hidden="true">{{ emoji() }}</span>
           }
@@ -47,7 +47,7 @@
     </div>
     <div class="flex min-h-20 items-center justify-center pb-4" aria-live="polite">
       @if (solved()) {
-        <button type="button" class="min-h-11 min-w-11 rounded-full bg-slate-900 px-8 py-3 text-2xl text-white" data-testid="next" (click)="nextRound()">Next →</button>
+        <button type="button" class="min-h-11 min-w-11 rounded-full bg-slate-900 dark:bg-slate-200 px-8 py-3 text-2xl text-white dark:text-slate-900" data-testid="next" (click)="nextRound()">Next →</button>
       } @else if (wrongIds().size > 0) {
         <p class="text-xl" data-testid="try-again">Almost! Try another picture.</p>
       }

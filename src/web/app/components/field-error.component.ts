@@ -10,7 +10,7 @@ import { NotificationService } from './notification.service';
   template: `
     @if (message(); as text) {
       <p
-        class="mt-1 flex items-start gap-2 text-base font-medium text-red-800"
+        class="mt-1 flex items-start gap-2 text-base font-medium text-red-800 dark:text-red-300"
         role="alert"
         [id]="fieldId() + '-error'"
       >

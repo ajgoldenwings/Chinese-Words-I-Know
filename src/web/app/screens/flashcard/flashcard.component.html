@@ -1,4 +1,4 @@
-<main class="relative flex h-dvh flex-col bg-white text-slate-900">
+<main class="relative flex h-dvh flex-col bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
   <a
     routerLink="/"
     aria-label="Back"
@@ -14,14 +14,14 @@
       (click)="onCardPress()"
     >
       @if (imageUrl(); as url) {
-        <img [src]="url" [alt]="w.english" class="min-h-0 w-full flex-1 object-contain" (error)="onImageError()" />
+        <img [src]="url" [alt]="w.english" class="word-image min-h-0 w-full flex-1 object-contain" (error)="onImageError()" />
       } @else {
         <span class="flex min-h-0 flex-1 items-center justify-center text-[10rem] leading-none" aria-hidden="true">{{ emoji() }}</span>
       }
       <span class="text-4xl font-semibold">{{ w.english }}</span>
       @if (display(); as d) {
         @if (d.showPinyin) {
-          <span class="pinyin text-2xl text-slate-600">{{ w.pinyin }}</span>
+          <span class="pinyin text-2xl text-slate-600 dark:text-slate-300">{{ w.pinyin }}</span>
         }
         @if (d.showCharacters) {
           <span class="characters text-5xl">{{ w.simplified }}</span>
@@ -33,13 +33,13 @@
       <div class="flex justify-center gap-8 p-6">
         <button
           type="button"
-          class="got-it flex size-24 items-center justify-center rounded-full border-4 border-slate-900 bg-slate-100 text-5xl"
+          class="got-it flex size-24 items-center justify-center rounded-full border-4 border-slate-900 dark:border-slate-100 bg-slate-100 dark:bg-slate-800 text-5xl"
           aria-label="Got it"
           (click)="gotIt()"
         >✓</button>
         <button
           type="button"
-          class="not-yet flex size-24 items-center justify-center rounded-md border-4 border-dashed border-slate-900 bg-white text-5xl"
+          class="not-yet flex size-24 items-center justify-center rounded-md border-4 border-dashed border-slate-900 dark:border-slate-100 bg-white dark:bg-slate-900 text-5xl"
           aria-label="Not yet"
           (click)="notYet()"
         >✗</button>

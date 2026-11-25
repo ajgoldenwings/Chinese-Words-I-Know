@@ -5,7 +5,15 @@
   <title>Chinese Words I Know</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#c87f51">
+  <!-- The page follows the device theme (light or dark). There is no in-app toggle. -->
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#c87f51" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#020617" media="(prefers-color-scheme: dark)">
+  <style>
+    /* Boot screen colours, before the app stylesheet loads. Matches the app's slate-950 dark page. */
+    .boot { display: flex; height: 100dvh; align-items: center; justify-content: center; background: #fff; }
+    @media (prefers-color-scheme: dark) { .boot { background: #020617; } }
+  </style>
   <link rel="icon" type="image/x-icon" href="assets/images/logo/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/images/logo/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/images/logo/favicon-16.png">
@@ -15,7 +23,7 @@
 <body>
   <!-- The logo shows while the app loads. Angular replaces it when it starts. -->
   <app-root>
-    <div style="display:flex;height:100dvh;align-items:center;justify-content:center;background:#fff">
+    <div class="boot">
       <img src="assets/images/logo/boot.png" alt="Chinese Words I Know" width="120" height="120">
     </div>
   </app-root>
